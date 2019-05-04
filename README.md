@@ -15,11 +15,13 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
 - StanfordNLP => https://stanfordnlp.github.io/stanfordnlp/
 
 ## [Attention]
-The Project is under MIT License.
+The Project is licensed under MIT License, you may not use the software package except in compliance with the License. You may obtain a copy of the License at
+
+https://opensource.org/licenses/MIT or directly from the repo
 
 The used StanfordNLP Package is licensed under the Apache License, Version 2.0 (the “License”), you may not use the software package except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0 or directly from the repo
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
