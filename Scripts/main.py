@@ -35,27 +35,6 @@ class AmbiguityMapper():
             message = template.format(type(ex).__name__, ex.args)
             print(message)
             sys.exit(1)
-
-
-
-    def SavePyPlotToFile(self, extender:str = None, orientation:str = 'landscape', image_type:str = 'png'):
-        """
-        This function 
-            :param extender:str: extender for the filename [Default None]
-            :param orientation:str: print orientation [Default 'landscape']
-            :parama image_type:str: image file type [Default 'png']
-        """   
-        try:
-
-            if extender is None:
-                plt.savefig((self.fname+'_plot.'+image_type), orientation=orientation)
-            else: 
-                plt.savefig((self.fname+'_'+extender+'.'+image_type), orientation=orientation)
-        except Exception as ex:
-            template = "An exception of type {0} occurred in [Main.SavePyPlotToFile]. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
-            print(ex)
     
 if __name__ == "__main__":
     AmbiguityMapper().Execute()
