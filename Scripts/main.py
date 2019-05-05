@@ -1,14 +1,11 @@
 import os, sys
 import platform as pf
-<<<<<<< HEAD
 import keras
 import tensorflow as tf
 from pattern.de import parse, split
 
-=======
 from Scripts.FolderManager.manager import Manager
 from Scripts.Json.builder import Builder
->>>>>>> e1f84a3a0b902cbb3fa83a701495cad396c196f7
 
 class AmbiguityMapper():
 
