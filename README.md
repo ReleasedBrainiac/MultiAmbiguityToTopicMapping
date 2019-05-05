@@ -13,7 +13,9 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   - pip3 install torchvision
 - StanfordNLP:                  => https://stanfordnlp.github.io/stanfordnlp/#installation
   -  pip install stanfordnlp
-
+- Pattern-DE                    => https://www.clips.uantwerpen.be/pages/pattern-de 
+  - Github https://github.com/clips/pattern
+  - pip install pattern
 
 ## Current developement status
 - Tool is untested, in proceeding
