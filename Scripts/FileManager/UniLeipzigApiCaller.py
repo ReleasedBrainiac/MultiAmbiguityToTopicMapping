@@ -1,0 +1,66 @@
+import requests
+import json
+from SupportMethods.ContentSupport import isNotNone, isNotEmptyString, isInt
+
+class UniLeipzigAPICaller():
+
+    def __init__(self, word:str, result_limit:int, base_url:str = "http://api.corpora.uni-leipzig.de/ws/sentences/", corpus:str = "deu_news_2012_1M", task:str = "sentences"):
+        """
+        docstring here
+            :param self: 
+            :param word:str: 
+            :param result_limit:int: 
+            :param base_url:str="http://api.corpora.uni-leipzig.de/ws/sentences/": 
+            :param corpus:str="deu_news_2012_1M": 
+            :param task:str="sentences": 
+        """   
+        try:
+            self._search_word = word if (isNotNone(word) and isNotEmptyString(word)) else None
+            self._search_limit = result_limit if (isNotNone(result_limit) and isInt(result_limit)) else 1
+
+            self._base_url = base_url if (isNotNone(base_url) and isNotEmptyString(base_url)) else "http://api.corpora.uni-leipzig.de/ws/sentences/"
+            self._corpus = corpus if (isNotNone(corpus) and isNotEmptyString(corpus)) else "deu_news_2012_1M"
+            self._task = task if (isNotNone(task) and isNotEmptyString(task)) else "sentences"
+            self._search_url_param = "?limit="
+
+            self._search_url = None
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [UniLeipzigAPICaller.Constructor]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def UrlBuilder(self):
+        try:
+            self._search_url = self._base_url + self._corpus +"/" + self._task +"/" + self._search_word + self._search_url_param + str(self._search_limit)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [UniLeipzigAPICaller.UrlBuilder]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def GetRequestJson(self):
+        try:
+            self.UrlBuilder()
+            response = requests.get(self._search_url)
+            if response.status_code is 200:
+                return json.loads(response.content)
+            else:
+                answer = input("Request failed! Retry? (j/n)")
+                if (answer is "j"): self.GetRequestJson()
+                else: return None
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetRequestJson]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def GetFoundSentences(self, in_json:dict = None):
+        try:
+            sentences_list = []
+            sentences = in_json['sentences']
+            for sentence_obj in sentences: 
+                sentences_list.append(sentence_obj['sentence'])
+
+            return sentences_list
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetFoundSentences]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
