@@ -2,10 +2,10 @@ import os, sys
 import platform as pf
 import keras
 import tensorflow as tf
-from pattern.de import parse, split
 
+from pattern.de import parse, split
 from Scripts.FolderManager.manager import Manager
-from Scripts.Json.builder import Builder
+from Scripts.JSONHandler.builder import Builder
 
 class AmbiguityMapper():
 
