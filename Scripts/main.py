@@ -1,9 +1,14 @@
 import os, sys
 import platform as pf
+<<<<<<< HEAD
 import keras
 import tensorflow as tf
 from pattern.de import parse, split
 
+=======
+from Scripts.FolderManager.manager import Manager
+from Scripts.Json.builder import Builder
+>>>>>>> e1f84a3a0b902cbb3fa83a701495cad396c196f7
 
 class AmbiguityMapper():
 
@@ -32,6 +37,26 @@ class AmbiguityMapper():
             print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
+
+            builder = Builder()
+            builder.createJson()
+            builder.newEntry()
+
+            manager = Manager() 
+            run = True
+            while run:
+                word=input("Wort:")
+                manager.createFolder(word)
+                sub = True
+                while sub:
+                    subcategorie=input("Sub:")
+                    manager.createCategorie(subcategorie)
+                    ready = input("Weitere Kategorie? (j/n)")
+                    if not ready == "j":
+                        sub = False
+                moreWords = input("weiteres Wort?(j/n)")
+                if  not moreWords == "j":
+                    run = False
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteTool]. Arguments:\n{1!r}"
