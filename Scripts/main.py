@@ -3,9 +3,12 @@ import platform as pf
 #import keras
 #import tensorflow as tf
 #from pattern.de import parse, split
+import keras
+import tensorflow as tf
 
-from Scripts.FolderManager.manager import Manager
-from Scripts.Json.builder import Builder
+from pattern.de import parse, split
+from FolderManager.manager import Manager
+from JSONHandler.Builder import Builder
 
 class AmbiguityMapper():
 
