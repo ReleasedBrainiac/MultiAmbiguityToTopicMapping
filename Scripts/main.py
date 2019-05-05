@@ -1,8 +1,8 @@
 import os, sys
 import platform as pf
-import keras
-import tensorflow as tf
-from pattern.de import parse, split
+#import keras
+#import tensorflow as tf
+#from pattern.de import parse, split
 
 from Scripts.FolderManager.manager import Manager
 from Scripts.Json.builder import Builder
@@ -30,13 +30,12 @@ class AmbiguityMapper():
             print("Platform:\t\t=> ", pf.platform())
             print("CPU:\t\t\t=> ", pf.processor())
             print("Python Version:\t\t=> ", pf.python_version())
-            print("Tensorflow version: \t=> ", tf.__version__)
-            print("Keras version: \t\t=> ", keras.__version__, '\n')
+           # print("Tensorflow version: \t=> ", tf.__version__)
+            #print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
             builder = Builder()
-            builder.createJson()
             builder.newEntry()
 
             manager = Manager() 
