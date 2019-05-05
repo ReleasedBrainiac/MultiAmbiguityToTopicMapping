@@ -1,5 +1,8 @@
 import os, sys
 import platform as pf
+import keras
+import tensorflow as tf
+from pattern.de import parse, split
 
 
 class AmbiguityMapper():
@@ -25,11 +28,11 @@ class AmbiguityMapper():
             print("Platform:\t\t=> ", pf.platform())
             print("CPU:\t\t\t=> ", pf.processor())
             print("Python Version:\t\t=> ", pf.python_version())
-            #print("Tensorflow version: \t=> ", tf.__version__)
-            #print("Keras version: \t\t=> ", keras.__version__, '\n')
+            print("Tensorflow version: \t=> ", tf.__version__)
+            print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-            
+
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteTool]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
