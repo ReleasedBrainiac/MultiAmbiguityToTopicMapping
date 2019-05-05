@@ -4,8 +4,8 @@ import keras
 import tensorflow as tf
 
 from pattern.de import parse, split
-from Scripts.FolderManager.manager import Manager
-from Scripts.JSONHandler.builder import Builder
+from FolderManager.manager import Manager
+from JSONHandler.Builder import Builder
 
 class AmbiguityMapper():
 

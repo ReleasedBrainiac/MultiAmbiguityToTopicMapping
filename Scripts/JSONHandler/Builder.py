@@ -1,6 +1,6 @@
 import json
 import os
-from Scripts.SupportMethods.ContentSupport import isNotNone
+from SupportMethods.ContentSupport import isNotNone
 
 class Builder():
 
