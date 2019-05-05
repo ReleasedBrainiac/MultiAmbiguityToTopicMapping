@@ -6,13 +6,12 @@ class UniLeipzigAPICaller():
 
     def __init__(self, word:str, result_limit:int, base_url:str = "http://api.corpora.uni-leipzig.de/ws/sentences/", corpus:str = "deu_news_2012_1M", task:str = "sentences"):
         """
-        docstring here
-            :param self: 
-            :param word:str: 
-            :param result_limit:int: 
-            :param base_url:str="http://api.corpora.uni-leipzig.de/ws/sentences/": 
-            :param corpus:str="deu_news_2012_1M": 
-            :param task:str="sentences": 
+        The constructor for the ApiCaller.
+            :param word:str: desired word
+            :param result_limit:int: limit of results
+            :param base_url:str: base url of the api providing server
+            :param corpus:str=: the desired corpus 
+            :param task:str="sentences": the desired task
         """   
         try:
             self._search_word = word if (isNotNone(word) and isNotEmptyString(word)) else None
@@ -30,6 +29,9 @@ class UniLeipzigAPICaller():
             print(message)
 
     def UrlBuilder(self):
+        """
+        This function constructs the url.
+        """   
         try:
             self._search_url = self._base_url + self._corpus +"/" + self._task +"/" + self._search_word + self._search_url_param + str(self._search_limit)
         except Exception as ex:
@@ -38,6 +40,9 @@ class UniLeipzigAPICaller():
             print(message)
 
     def GetRequestJson(self):
+        """
+        This function returns the json response.
+        """   
         try:
             self.UrlBuilder()
             response = requests.get(self._search_url)
@@ -52,14 +57,17 @@ class UniLeipzigAPICaller():
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def GetFoundSentences(self, in_json:dict = None):
-        try:
-            sentences_list = []
-            sentences = in_json['sentences']
-            for sentence_obj in sentences: 
-                sentences_list.append(sentence_obj['sentence'])
-
-            return sentences_list
+    def GetFoundSentences(self):
+        """
+        This function returns the sentences from get response.
+        """   
+        try:    
+            if (self._task is "sentences"):
+                sentences_list = []
+                sentences = self.GetRequestJson()['sentences']
+                for sentence_obj in sentences: 
+                    sentences_list.append(sentence_obj['sentence'])
+                return sentences_list
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetFoundSentences]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
