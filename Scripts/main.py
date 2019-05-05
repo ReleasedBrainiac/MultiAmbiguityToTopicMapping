@@ -1,6 +1,7 @@
 import os, sys
 import platform as pf
-
+from Scripts.FolderManager.manager import Manager
+from Scripts.Json.builder import Builder
 
 class AmbiguityMapper():
 
@@ -28,6 +29,29 @@ class AmbiguityMapper():
             #print("Tensorflow version: \t=> ", tf.__version__)
             #print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+            builder = Builder()
+            builder.createJson()
+            builder.newEntry()
+
+            manager = Manager() 
+            run = True
+            while run:
+                word=input("Wort:")
+                manager.createFolder(word)
+                sub = True
+                while sub:
+                    subcategorie=input("Sub:")
+                    manager.createCategorie(subcategorie)
+                    ready = input("Weitere Kategorie? (j/n)")
+                    if not ready == "j":
+                        sub = False
+                moreWords = input("weiteres Wort?(j/n)")
+                if  not moreWords == "j":
+                    run = False
+
+
+
 
             
         except Exception as ex:
