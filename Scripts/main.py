@@ -6,6 +6,7 @@ import time
 #import keras
 #import tensorflow as tf
 #from pattern.de import parse, split
+
 from FolderManager.manager import Manager
 from Json.builder import Builder
 from Models.DataModel import DataModel
@@ -14,6 +15,7 @@ from FileManager.FileWriter import Writer
 from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 
+from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 
 class AmbiguityMapper():
 
@@ -60,6 +62,9 @@ class AmbiguityMapper():
                     print(len(caller_list))
                     open("Basis/"+element+".txt","w+").close()
                     writer = Writer("Basis/"+element+".txt",None, caller_list,None)
+            '''inputManager = InputManager()
+            inputManager.runInputRoutin()
+            print(len(inputManager._resultList))
 
             
 
@@ -68,6 +73,14 @@ class AmbiguityMapper():
             #builder.newEntry()
 
             #manager = Manager() 
+            manager = Manager() '''
+
+            api_caller = UniLeipzigAPICaller(word="Hengst", result_limit=10)
+            json = api_caller.GetRequestJson()
+            list_sentences = api_caller.GetFoundSentences(json)
+
+            for sentence in list_sentences:
+                print(sentence)
 
 
         except Exception as ex:
