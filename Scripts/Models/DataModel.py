@@ -6,3 +6,7 @@ class DataModel():
         self._word = word if isNotNone(word) else None
         self._category = category if isNotNone(category) else None
         self._sentence = sentence if isNotNone(sentence) else None
+
+    
+    def toString(self):
+        return self._word+" | "+self._category+" | "+self._sentence

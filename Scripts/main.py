@@ -3,12 +3,11 @@ import platform as pf
 #import keras
 #import tensorflow as tf
 #from pattern.de import parse, split
-import keras
-import tensorflow as tf
-
-from pattern.de import parse, split
 from FolderManager.manager import Manager
-from JSONHandler.Builder import Builder
+from Json.builder import Builder
+from Models.DataModel import DataModel
+from Json.inputManager import InputManager
+from FileManager.FileWriter import Writer
 
 class AmbiguityMapper():
 
@@ -38,24 +37,23 @@ class AmbiguityMapper():
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
+            inputManager = InputManager()
+            inputManager.runInputRoutin()
+            print(len(inputManager._resultList))
+
+            
+            file = input("worunter speichern?:")
+            if not os.path.exists("Data"):
+                os.mkdir("Data")
+            open("Data/"+file+".txt","w+").close()
+            writer = Writer("Data/"+file+".txt",None, inputManager._resultList,None)
+
+
             builder = Builder()
             builder.newEntry()
 
             manager = Manager() 
-            run = True
-            while run:
-                word=input("Wort:")
-                manager.createFolder(word)
-                sub = True
-                while sub:
-                    subcategorie=input("Sub:")
-                    manager.createCategorie(subcategorie)
-                    ready = input("Weitere Kategorie? (j/n)")
-                    if not ready == "j":
-                        sub = False
-                moreWords = input("weiteres Wort?(j/n)")
-                if  not moreWords == "j":
-                    run = False
+
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteTool]. Arguments:\n{1!r}"

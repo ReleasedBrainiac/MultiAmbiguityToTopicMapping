@@ -13,13 +13,23 @@ class Builder():
             json.dump(json_string,file)
             print("create JSON")
 
+    def createEntry(self, dataList:list):
+        json_data = None
+        with open('dataset.json', "r+") as json_file:
+            json_data = json.load(json_file)    
+        for data in dataList:
+            print(data)
+        with open("dataset.json","w+") as json_file:
+            json.dump(data, json_file)
+
+
+
     def buildSubcategorie(self, sentences:list):
         subcategorie={}
         for i in range(sentences):
             subcategorie["sens"+i]=sentences[i]
         return subcategorie
         
-
 
     def newEntry(self):
         subcategorie ={}

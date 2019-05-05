@@ -159,8 +159,11 @@ def isNotEmptyString(input:str):
     this function check a string is not empty.
         :param input:str: given string
     """
-    tmp = input.lstrip(' ')
-    return isStr(input) and (len(tmp) > 0)
+    if isNotNone(input):
+        tmp = input.lstrip(' ')
+        return isStr(input) and (len(tmp) > 0)
+    else:
+        return False
 
 def isNotInStr(search , content):
     """

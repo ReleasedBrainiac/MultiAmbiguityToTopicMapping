@@ -1,5 +1,5 @@
-from DatasetHandler.ContentSupport import isStr, isNotNone, isNone
-from DatasetHandler.ContentSupport import setOrDefault, AssertNotNone
+from SupportMethods.ContentSupport import isStr, isNotNone, isNone
+from SupportMethods.ContentSupport import AssertNotNone, isNotEmptyString
 
 class Writer:
     """
@@ -20,7 +20,7 @@ class Writer:
             :param in_context:str: optional if no data pairs present use context
         """   
         try:
-            self._out_path = setOrDefault(input_path+'.'+ file_extender , self.constants.TYP_ERROR, isStr(file_extender))
+            self._out_path = (input_path+'.'+ file_extender) if isNotEmptyString(file_extender) else input_path
             print('Destination: ', self._out_path)
 
             if isNotNone(self._out_path):
