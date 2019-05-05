@@ -22,7 +22,7 @@ class Reader:
         try:
             look_up_elements = []
             with open(self._path, 'r', encoding="utf8") as fileIn:
-                for line in fileIn.readlines(): look_up_elements.append(line)
+                for line in fileIn.readlines(): look_up_elements.append(line.replace("\n",""))
             return look_up_elements
         except Exception as ex:
             template = "An exception of type {0} occurred in [FileReader.LinesToList]. Arguments:\n{1!r}"

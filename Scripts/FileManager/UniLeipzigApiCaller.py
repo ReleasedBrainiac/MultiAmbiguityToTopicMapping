@@ -49,7 +49,7 @@ class UniLeipzigAPICaller():
             if response.status_code is 200:
                 return json.loads(response.content)
             else:
-                answer = input("Request failed! Retry? (j/n)")
+                answer = input("Request failed for ["+self._search_word+"]! Retry? (j/n)")
                 if (answer is "j"): self.GetRequestJson()
                 else: return None
         except Exception as ex:

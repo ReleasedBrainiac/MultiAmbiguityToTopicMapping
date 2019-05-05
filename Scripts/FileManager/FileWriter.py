@@ -64,10 +64,9 @@ class Writer:
         """
         try:
             with open(self._out_path, 'w', encoding=self._writer_encoding) as fileOut:
-                for i in range(len(self._elements)):
-                    elem = self._elements[i]
+                for elem in self._elements:
                     if isNotNone(elem):
-                        fileOut.write(elem)
+                        fileOut.write(elem+"\n")
                         fileOut.flush()
         except ValueError:
             print('WRONG INPUT FOR [FileWriter.StoreListElements]')

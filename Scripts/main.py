@@ -1,5 +1,8 @@
+# -*- encoding: utf-8 -*-
 import os, sys
 import platform as pf
+import unicodedata
+import time
 #import keras
 #import tensorflow as tf
 #from pattern.de import parse, split
@@ -8,6 +11,9 @@ from Json.builder import Builder
 from Models.DataModel import DataModel
 from Json.inputManager import InputManager
 from FileManager.FileWriter import Writer
+from FileManager.FileReader import Reader
+from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
+
 
 class AmbiguityMapper():
 
@@ -37,22 +43,31 @@ class AmbiguityMapper():
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 
-            inputManager = InputManager()
-            inputManager.runInputRoutin()
-            print(len(inputManager._resultList))
+            #inputManager = InputManager()
+            #inputManager.runInputRoutin()
+            #print(len(inputManager._resultList))
+
+            if not os.path.exists("Basis"):
+                os.mkdir("Basis")
+            
+            reader = Reader("polysem.txt")
+            reader_elements=reader.LinesToList()
+            for element in reader_elements:
+                caller = UniLeipzigAPICaller(element,30)
+                caller_list = caller.GetFoundSentences()
+
+                if (len(caller_list) >= 10):
+                    print(len(caller_list))
+                    open("Basis/"+element+".txt","w+").close()
+                    writer = Writer("Basis/"+element+".txt",None, caller_list,None)
 
             
-            file = input("worunter speichern?:")
-            if not os.path.exists("Data"):
-                os.mkdir("Data")
-            open("Data/"+file+".txt","w+").close()
-            writer = Writer("Data/"+file+".txt",None, inputManager._resultList,None)
 
 
-            builder = Builder()
-            builder.newEntry()
+            #builder = Builder()
+            #builder.newEntry()
 
-            manager = Manager() 
+            #manager = Manager() 
 
 
         except Exception as ex:
