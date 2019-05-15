@@ -7,13 +7,13 @@ import time
 #import tensorflow as tf
 #from pattern.de import parse, split
 
-from Scripts.FolderManager.manager import Manager
-from Scripts.Json.builder import Builder
-from Scripts.Models.DataModel import DataModel
-from Scripts.Json.inputManager import InputManager
-from Scripts.FileManager.FileWriter import Writer
-from Scripts.FileManager.FileReader import Reader
-from Scripts.FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
+from FolderManager.manager import Manager
+from Json.builder import Builder
+from Models.DataModel import DataModel
+from Json.inputManager import InputManager
+from FileManager.FileWriter import Writer
+from FileManager.FileReader import Reader
+from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 
 class AmbiguityMapper():
 
@@ -55,7 +55,7 @@ class AmbiguityMapper():
             #print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             
-            if PULL_DATASET:
+            if self.PULL_DATASET:
                 self.ExecuteRawDatasetCollection()
             else:
                 self.ExecuteANNProcessing()
