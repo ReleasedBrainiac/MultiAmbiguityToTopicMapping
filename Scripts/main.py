@@ -9,8 +9,6 @@ import time
 
 from FolderManager.Manager import FolderManager
 from Json.Builder import Builder
-from Models.DataModel import DataModel
-from Json.inputManager import InputManager
 from FileManager.FileWriter import Writer
 from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
@@ -67,7 +65,7 @@ class AmbiguityMapper():
     def ExecuteANNProcessing(self):
         try:
             #TODO: Currently not in use since the pipe and the network are still missing.
-            pass
+            builder = Builder("dataset.json", "dataset")
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
