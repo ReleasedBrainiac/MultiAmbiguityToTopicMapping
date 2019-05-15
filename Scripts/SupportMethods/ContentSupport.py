@@ -142,6 +142,14 @@ def isLambda(input):
 
 
 # Content control statements must return bool
+def CheckAnyListElementSameType(in_list:list, in_type:type):
+    """
+    This function checks all elements of a list a equal to a specific type.
+        :param in_list:list: a list of elements
+        :param in_type:type: a specific type
+    """
+    return any(isinstance(x, in_type) for x in in_list)
+
 def isXTypeEqualY(object_x, object_y):
     """
     This function check input type x and input type y are equal.
