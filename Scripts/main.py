@@ -28,7 +28,6 @@ class AmbiguityMapper():
     DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"
     DATASET_SINGLE_FILE_TYP = "txt"
 
-
     
     def Execute(self):
         """
