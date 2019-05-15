@@ -1,5 +1,5 @@
 from SupportMethods.ContentSupport import isNotNone, isNone, CheckAnyListElementSameType
-from Scripts.Models.DataModels import Word, Category
+from Models.DataModels import Word, Category
 
 class Sample(object):
 
