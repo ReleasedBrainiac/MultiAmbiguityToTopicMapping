@@ -1,52 +1,42 @@
 import os
 from SupportMethods.ContentSupport import isNotNone
 
-class Manager():
-    MAINPATH = None
+#TODO: add primitve class structure elements as doc, try/catch and relax the code like S.O.L.I.D. standard says.
 
-    def __init__(self, init_path:str = "Dataset/"):
+class Manager():
+    _main_path = None
+
+    def __init__(self, init_path:str = "Datasets/"):
+        """
+        This constructor generate the init folder for the dataset if doesnt exist.
+            :param init_path:str: the dataset initial path
+        """   
         try:
-            self.MAINPATH = init_path if isNotNone(path) else None
+            self._main_path = init_path
             self._foldername = None
-            self.CreateInitFolder()     
+            self.CreateDatasetFolder()     
         except Exception as ex:
             template = "An exception of type {0} occurred in [FolderManager.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def CreateInitFolder(self):
+    def CreateDatasetFolder(self,name:str=None):
+        """
+        This class creates the initial dataset folder on None input or a desired dataset subfolder on given name"
+            :param name:str: name of a dataset subfolder
+        """   
         try:
-            if not os.path.exists(self.MAINPATH): os.mkdir(self.MAINPATH)
-        except Exception as ex:
-            template = "An exception of type {0} occurred in [FolderManager.CreateInitFolder]. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
+            folderpath = self._main_path+name if isNotNone(name) else self._main_path
+            self._foldername = None
 
-    def CreateFolder(self, folder_name:str = None):
-        try:
-            if not os.path.exists(self.MAINPATH): os.mkdir(self.MAINPATH)
-        except Exception as ex:
-            template = "An exception of type {0} occurred in [FolderManager.CreateInitFolder]. Arguments:\n{1!r}"
-            message = template.format(type(ex).__name__, ex.args)
-            print(message)
-
-
-    def CreateFolder(self,name:str):
-        try:
-            folderpath = self.MAINPATH+name
             if not os.path.exists(folderpath):
                 os.mkdir(folderpath)
-            self._foldername = name
-        except OSError:
-            print ("Creation of the directory %s failed" % name)
-        else:  
-            print ("Successfully created the directory %s " % name)
-        
-    def createCategorie(self,name:str):
-        path = self.MAINPATH+self._foldername+"/"+name
-        open(path,"w+").close()
-
-        
-    def createAll(self, word:str, categories:str):
-        self.createFolder(word)
-        self.createCategorie(categories)
+            
+            if os.path.exists():
+                 print ("Successfully created the directory %s " % name)
+            else:
+                print("Failed to create directory %s !" % name)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [FolderManager.CreateDatasetFolder]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message) 
