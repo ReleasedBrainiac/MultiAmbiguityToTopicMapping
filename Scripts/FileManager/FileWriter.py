@@ -11,7 +11,7 @@ class Writer:
     _out_path = None
     
 
-    def __init__(self, input_path:str, file_extender:str ='output', in_elements:list =None, in_context:str =None):
+    def __init__(self, input_path:str, file_extender:str = None, in_elements:list = None, in_context:str = None):
         """
         This is the constructor of the Writer class.
             :param input_path:str: path of the input file
