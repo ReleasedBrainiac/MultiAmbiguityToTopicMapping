@@ -1,9 +1,7 @@
 import os
 from SupportMethods.ContentSupport import isNotNone
 
-#TODO: add primitve class structure elements as doc, try/catch and relax the code like S.O.L.I.D. standard says.
-
-class Manager():
+class FolderManager():
     _main_path = None
 
     def __init__(self, init_path:str = "Datasets/"):

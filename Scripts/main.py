@@ -7,7 +7,7 @@ import time
 #import tensorflow as tf
 #from pattern.de import parse, split
 
-from FolderManager.manager import Manager
+from FolderManager.Manager import FolderManager
 from Json.builder import Builder
 from Models.DataModel import DataModel
 from Json.inputManager import InputManager
