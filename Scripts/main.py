@@ -8,7 +8,7 @@ import time
 #from pattern.de import parse, split
 
 from FolderManager.Manager import FolderManager
-from Json.builder import Builder
+from Json.Builder import Builder
 from Models.DataModel import DataModel
 from Json.inputManager import InputManager
 from FileManager.FileWriter import Writer
