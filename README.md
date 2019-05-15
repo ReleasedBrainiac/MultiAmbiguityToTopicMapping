@@ -11,8 +11,6 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
 - Pytorch + Torchvision         => https://pytorch.org/get-started/locally/
   - pip3 install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-win_amd64.whl
   - pip3 install torchvision
-- StanfordNLP:                  => https://stanfordnlp.github.io/stanfordnlp/#installation
-  -  pip install stanfordnlp
 - Pattern-DE                    => https://www.clips.uantwerpen.be/pages/pattern-de 
   - Github https://github.com/clips/pattern
   - pip install pattern
@@ -27,10 +25,6 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
 The Project is licensed under MIT License, you may not use the software package except in compliance with the License. You may obtain a copy of the License at
 
 https://opensource.org/licenses/MIT or directly from the repo LICENSE
-
-The used StanfordNLP Package is licensed under the Apache License, Version 2.0 (the “License”), you may not use the software package except in compliance with the License. You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0 or directly copy StanfordNLP_LICENSE_Copy from repo
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
