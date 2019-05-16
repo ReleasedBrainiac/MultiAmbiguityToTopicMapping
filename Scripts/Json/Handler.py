@@ -3,7 +3,7 @@ import os
 from SupportMethods.ContentSupport import isNotNone
 from Models.DataModels import Word, Category
 
-class Builder():
+class Handler():
 
     _encoding = 'utf-8'
 
@@ -16,7 +16,8 @@ class Builder():
         try:
             self._file_name = file_name  if isNotNone(file_name) else "dataset"
             self._json_name = json_name if isNotNone(json_name) else "Dataset"
-            if not os.path.exists(self._file_name): self.InitJson()
+            if not os.path.exists(self._file_name): 
+                self.InitJson()
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -106,3 +107,5 @@ class Builder():
             template = "An exception of type {0} occurred in [JsonBuilder.WriteToJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+
+    def ReadFromJson(self):
