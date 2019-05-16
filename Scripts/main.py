@@ -84,10 +84,8 @@ class AmbiguityMapper():
                 return None
 
             generator = SampleGenerator(words)
-            samples = generator.GenerateDatasetSamples()
-
-            for sample in samples:
-                print(sample.GetTuple())
+            samples = [v.GetTuple() for v in  generator.GenerateDatasetSamples()]
+            
 
 
         except Exception as ex:
