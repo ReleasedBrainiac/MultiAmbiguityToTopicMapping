@@ -1,7 +1,7 @@
 import json
 import os
 from SupportMethods.ContentSupport import isNotNone
-from Scripts.Models.DataModels import Word, Category
+from Models.DataModels import Word, Category
 
 class Builder():
 
@@ -56,6 +56,7 @@ class Builder():
         """   
         try:
             categories_json = {}
+            print("Category: ", categories)
             for category in categories:
                 if isinstance(category, Category):
                     categories_json[category.GetName()] = self.NewSentences(category.GetSentences())
@@ -74,6 +75,7 @@ class Builder():
         try:
             word_json = {}
             for word in words:
+                print(word)
                 if isinstance(word, Word):
                     word_json[word.GetName()] = self.NewCategories(word.GetCategories()) 
             return word_json
@@ -90,14 +92,14 @@ class Builder():
         try:
             data = None
             
-            with open(self.file_name, "r+") as json_file:
+            with open(self._file_name, "r+") as json_file:
                 data = json.load(json_file)
 
                 for word_name, word in words.items():
                     if isinstance(word, Word) and isinstance(word_name, str):
                         data[self._json_name] = word 
 
-            with open(self.file_name,"w+") as json_file:
+            with open(self._file_name,"w+") as json_file:
                 json.dump(data, json_file)
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.WriteToJson]. Arguments:\n{1!r}"
