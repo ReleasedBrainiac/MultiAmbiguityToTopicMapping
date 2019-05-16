@@ -77,7 +77,6 @@ class AmbiguityMapper():
     
     def ExecuteANNProcessing(self):
         try:
-            #TODO: Currently not in use since the pipe and the network are still missing.
             generator:SampleGenerator = None
             handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
             words:list = handler.ReadFromJson()
@@ -89,7 +88,7 @@ class AmbiguityMapper():
             generator = SampleGenerator(words)
             samples = [v.GetTuple() for v in  generator.GenerateDatasetSamples()]
             
-
+            #TODO: Currently not in use since the pipe and the network are still missing.
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
