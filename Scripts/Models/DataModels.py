@@ -16,6 +16,12 @@ class Category(object):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
+    def GetName(self):
+        """
+        Getter for the category name
+        """   
+        return self._category
+
     def GetSentences(self):
         """
         This method returns the sentences.
@@ -45,6 +51,12 @@ class Word(object):
             template = "An exception of type {0} occurred in [Word.Constrcutor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+
+    def GetName(self):
+        """
+        Getter for the word name
+        """   
+        return self._word
 
     def GetCategories(self):
         """
