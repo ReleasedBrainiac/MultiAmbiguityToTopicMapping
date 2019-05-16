@@ -1,6 +1,7 @@
 *.pyc
 *.ouput
 *.txt
+*.json
 /.vs
 /.vscode
 **/__pycache__/
