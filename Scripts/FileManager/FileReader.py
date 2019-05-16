@@ -1,3 +1,6 @@
+from Models.DataModels import Category
+from SupportMethods.ContentSupport import isNotNone, hasContent
+
 class Reader:
     """
     This class provides a FileReader for text files.
@@ -26,5 +29,33 @@ class Reader:
             return look_up_elements
         except Exception as ex:
             template = "An exception of type {0} occurred in [FileReader.LinesToList]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def CategoriesReader(self):
+        """
+        This function provides file to category objects list file reader.
+        """
+        try:
+            collected_sentences:list = []
+            category_name:str = None
+            categories:list = []
+
+            with open(self._path, 'r', encoding="utf8") as fileIn:
+                for line in fileIn.readlines(): 
+                    line = line.replace("\n","")
+
+                    if "[" in line and "]" in line:
+                        if isNotNone(category_name) and hasContent(collected_sentences):
+                            categories.append(Category(category_name, collected_sentences))
+
+                        category:str = line.replace("[","").replace("]","")
+                        collected_sentences = []
+                    else:
+                        collected_sentences.append(line)
+
+            return categories
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [FileReader.WordObjectReader]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
