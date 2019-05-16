@@ -35,6 +35,10 @@ class Sample(object):
 class SampleGenerator(object):
 
     def __init__(self, word:list = None):
+        """
+        This class constructor collects a list of word models.
+            :param word:list=None: 
+        """   
         try:
             self._word_samples = word
         except Exception as ex:
@@ -43,13 +47,17 @@ class SampleGenerator(object):
             print(message)
 
     def GenerateDatasetSamples(self):
+        """
+        This method generates a list of samples out of the word model list.
+        """   
         try:
             if CheckAnyListElementSameType(self._word_samples, Word):
                 samples:list = []
                 for word in self._word_samples:
                     for category in word.GetCategories():
                         for sentence in category.GetSentences():
-                            sample = Sample(word=word, category=category, sentence=sentence)
+                            #TODO size of string and amount of minimum datasets please right here!
+                            sample = Sample(word=word.GetName(), category=category.GetName(), sentence=sentence)
                             if isNotNone(sample): samples.append(sample)
                 return samples 
             else:
