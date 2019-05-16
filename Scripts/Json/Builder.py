@@ -71,39 +71,3 @@ class Builder():
         with open("dataset.json","w+") as json_file:
             json.dump(data, json_file)
 
-
-
-
-
-    def newEntry(self):
-        subcategorie ={}
-        subcategorie["s1"]="bananananana"
-        subcategorie["s2"]="tadaaa"
-
-        categorie ={}
-        categorie["subcategorie"]=subcategorie
-
-        wort={}
-        wort["wort"]=categorie
-
-        subcategorie ={}
-        subcategorie["s1"]="bananananana"
-        subcategorie["s2"]="tadaaa"
-
-        categorie ={}
-        categorie["subcategorie"]=subcategorie
-        categorie["sub2"]=subcategorie
-
-        wort2={}
-        wort2["baum"]=categorie
-
-        data = None
-
-        with open('dataset.json', "r+") as json_file:
-            data = json.load(json_file)
-            data["Dataset"]["baum"]= categorie 
-            data["Dataset"]["brine"]=categorie
-
-        with open("dataset.json","w+") as json_file:
-            json.dump(data, json_file)
-
