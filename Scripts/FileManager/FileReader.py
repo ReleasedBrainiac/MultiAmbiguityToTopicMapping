@@ -1,5 +1,5 @@
 from Models.DataModels import Category
-from SupportMethods.ContentSupport import isNotNone, hasContent
+from SupportMethods.ContentSupport import isNotNone, isNone, hasContent
 
 class Reader:
     """
@@ -48,11 +48,16 @@ class Reader:
                     if "[" in line and "]" in line:
                         if isNotNone(category_name) and hasContent(collected_sentences):
                             categories.append(Category(category_name, collected_sentences))
+                            collected_sentences = []
+                            category_name = None
 
-                        category:str = line.replace("[","").replace("]","")
-                        collected_sentences = []
+                        category_name = line.replace("[","").replace("]","")
+                        
                     else:
-                        collected_sentences.append(line)
+                        if len(line) > 0: collected_sentences.append(line)
+
+                if isNotNone(category_name) and hasContent(collected_sentences):
+                    categories.append(Category(category_name, collected_sentences))
 
             return categories
         except Exception as ex:
