@@ -5,6 +5,8 @@ from Models.DataModels import Word, Category
 
 class Builder():
 
+    _encoding = 'utf-8'
+
     def __init__(self, file_name:str, json_name:str):
         """
         This is the json builder constructor which handles initializing th json file if not exist.
@@ -25,9 +27,9 @@ class Builder():
         This method initialize a new json if it not exist depending on the constructor inputs.
         """   
         try:
-            with open(self._file_name, "w+") as file:
+            with open(self._file_name, "w+", encoding=self._encoding) as file:
                 init_json = "{\""+self._json_name+"\": {}}"
-                json.dump(json.loads(init_json), file)
+                json.dump(json.loads(init_json, encoding=self._encoding), file, ensure_ascii=False)
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.InitJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -40,9 +42,10 @@ class Builder():
         """   
         try:
             sentences_json = {}
-            for index_s in range(sentences):
+            for index_s in range(len(sentences)):
                 if isinstance(sentences[index_s], str):
-                    sentences_json["S_"+index_s+1] = sentences[index_s]
+                    key = "S_"+ str(index_s+1)
+                    sentences_json[key] = sentences[index_s]
             return sentences_json
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.NewSentences]. Arguments:\n{1!r}"
@@ -56,7 +59,6 @@ class Builder():
         """   
         try:
             categories_json = {}
-            print("Category: ", categories)
             for category in categories:
                 if isinstance(category, Category):
                     categories_json[category.GetName()] = self.NewSentences(category.GetSentences())
@@ -75,7 +77,6 @@ class Builder():
         try:
             word_json = {}
             for word in words:
-                print(word)
                 if isinstance(word, Word):
                     word_json[word.GetName()] = self.NewCategories(word.GetCategories()) 
             return word_json
@@ -92,15 +93,15 @@ class Builder():
         try:
             data = None
             
-            with open(self._file_name, "r+") as json_file:
+            with open(self._file_name, "r+", encoding=self._encoding) as json_file:
                 data = json.load(json_file)
 
                 for word_name, word in words.items():
-                    if isinstance(word, Word) and isinstance(word_name, str):
-                        data[self._json_name] = word 
+                    if isinstance(word, dict) and isinstance(word_name, str):
+                        data[self._json_name][word_name] = word 
 
-            with open(self._file_name,"w+") as json_file:
-                json.dump(data, json_file)
+            with open(self._file_name,"w+", encoding=self._encoding) as json_file:
+                json.dump(data, json_file, ensure_ascii=False)
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.WriteToJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
