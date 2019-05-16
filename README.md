@@ -8,12 +8,6 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   - pip install tensorflow
 - Keras Version:        2.2.2   => https://keras.io/
   -  pip install keras
-- Pytorch + Torchvision         => https://pytorch.org/get-started/locally/
-  - pip3 install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-win_amd64.whl
-  - pip3 install torchvision
-- Pattern-DE                    => https://www.clips.uantwerpen.be/pages/pattern-de 
-  - Github https://github.com/clips/pattern
-  - pip install pattern
 
 ## Current developement status
 - Tool is untested, in proceeding
