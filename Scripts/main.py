@@ -1,11 +1,9 @@
 # -*- encoding: utf-8 -*-
 import os, sys
 import platform as pf
-import unicodedata
-import time
-#import keras
-#import tensorflow as tf
-#from pattern.de import parse, split
+from time import gmtime, strftime
+import keras
+import tensorflow as tf
 
 from FolderManager.Manager import FolderManager
 from Json.Handler import Handler
@@ -32,7 +30,9 @@ class AmbiguityMapper():
     JSON_NAME = "dataset"
     JSON_SUB_FOLDER = DATASET_PATH+"Json/"
     JSON_PATH = JSON_SUB_FOLDER + JSON_NAME + ".json"
-
+    _file_time_format:str = "%Y%m%d %H_%M_%S"
+    _console_time_format = "%d.%m.%Y %H:%M:%S"
+    _time_now:str = None
     
     def Execute(self):
         """
@@ -42,11 +42,14 @@ class AmbiguityMapper():
             2. Execute the network on the given dataset (includes cleaning but no storing of the AMR). 
         """  
         try:
+            self._time_now = strftime(self._console_time_format, gmtime())
+
             print("\n#######################################")
             print("######## Ambiguity Mapper ANN ########")
             print("#######################################\n")
 
             print("~~~~~~~~~~ System Informations ~~~~~~~~")
+            print("Execution Time:\t\t=> ", self._time_now)
             print("Used OS:\t\t=> ", pf.system())
             print("Release:\t\t=> ", pf.release())
             print("Version:\t\t=> ", pf.version())
@@ -55,8 +58,8 @@ class AmbiguityMapper():
             print("Platform:\t\t=> ", pf.platform())
             print("CPU:\t\t\t=> ", pf.processor())
             print("Python Version:\t\t=> ", pf.python_version())
-           # print("Tensorflow version: \t=> ", tf.__version__)
-            #print("Keras version: \t\t=> ", keras.__version__, '\n')
+            print("Tensorflow version: \t=> ", tf.__version__)
+            print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             
             if self._process is Process.DATA_TO_NETWORK:
@@ -81,7 +84,7 @@ class AmbiguityMapper():
 
             if not hasContent(words): 
                 print("System stopped on missing train data.")
-                return None
+                sys.exit(1)
 
             generator = SampleGenerator(words)
             samples = [v.GetTuple() for v in  generator.GenerateDatasetSamples()]
