@@ -27,9 +27,9 @@ class AmbiguityMapper():
     DATASET_PATH:str = "Datasets/"
     DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"
     DATASET_SINGLE_FILE_TYP = "txt"
-    JSON_NAME = "dataset.json"
+    JSON_NAME = "dataset"
     JSON_SUB_FOLDER = DATASET_PATH+"Json/"
-    JSON_PATH = JSON_SUB_FOLDER + JSON_NAME
+    JSON_PATH = JSON_SUB_FOLDER + JSON_NAME + ".json"
 
     
     def Execute(self):
@@ -73,7 +73,8 @@ class AmbiguityMapper():
     def ExecuteANNProcessing(self):
         try:
             #TODO: Currently not in use since the pipe and the network are still missing.
-            pass
+            handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
+            handler.ReadFromJson()
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"

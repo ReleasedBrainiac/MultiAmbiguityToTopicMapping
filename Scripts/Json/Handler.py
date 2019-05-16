@@ -14,7 +14,7 @@ class Handler():
             :param json_name:str: json name
         """   
         try:
-            self._file_name = file_name  if isNotNone(file_name) else "dataset"
+            self._file_name = file_name  if isNotNone(file_name) else "dataset.json"
             self._json_name = json_name if isNotNone(json_name) else "Dataset"
             if not os.path.exists(self._file_name): 
                 self.InitJson()
@@ -109,3 +109,17 @@ class Handler():
             print(message)
 
     def ReadFromJson(self):
+        try:
+            data = None
+
+            with open(self._file_name, "r+", encoding=self._encoding) as json_file:
+                dataset = json.load(json_file)
+
+            for words, word in dataset.items():
+                print("Words: ", words)
+
+
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [JsonBuilder.ReadFromJson]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
