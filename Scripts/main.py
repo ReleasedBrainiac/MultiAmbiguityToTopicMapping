@@ -8,7 +8,7 @@ import time
 #from pattern.de import parse, split
 
 from FolderManager.Manager import FolderManager
-from Json.Builder import Builder
+from Json.Handler import Handler
 from FileManager.FileWriter import Writer
 from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
@@ -86,7 +86,7 @@ class AmbiguityMapper():
         """   
         try:
             self.MakeFolderIfMissing(self.JSON_SUB_FOLDER)
-            builder:Builder = Builder(self.JSON_PATH, self.JSON_NAME)
+            handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
             words:list = []
 
             for file_item in os.listdir(self.DATASET_PATH):
@@ -94,7 +94,7 @@ class AmbiguityMapper():
                 if os.path.exists(composite_path) and os.path.isfile(composite_path): 
                     words.append(Word(file_item.replace(".txt","").lower(), Reader(composite_path).CategoriesReader()))
             
-            builder.WriteToJson(builder.NewWords(words))
+            handler.WriteToJson(handler.NewWords(words))
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteDatasetToJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
