@@ -5,7 +5,7 @@ class Writer:
     """
     This class provides a Writer to store string or list of string context.
     """
-    _writer_encoding = 'utf8'
+    _writer_encoding = 'utf-8'
     _context = None
     _elements = None
     _out_path = None
