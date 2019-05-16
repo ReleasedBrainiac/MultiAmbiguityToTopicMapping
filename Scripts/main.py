@@ -14,11 +14,13 @@ from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 from Models.Enums import Process
 from Models.DataModels import Word
+from SupportMethods.ContentSupport import hasContent
+from Models.Samples import SampleGenerator
 
 class AmbiguityMapper():
 
     # For pulling raw data samples
-    _process:Process = Process.DATA_TO_JSON
+    _process:Process = Process.DATA_TO_NETWORK
     COLLECT_WORD_LIST_PATH:str = "polysem.txt"
     COLLECTING_LIMIT:int = 30
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
@@ -73,13 +75,26 @@ class AmbiguityMapper():
     def ExecuteANNProcessing(self):
         try:
             #TODO: Currently not in use since the pipe and the network are still missing.
+            generator:SampleGenerator = None
             handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
-            handler.ReadFromJson()
+            words:list = handler.ReadFromJson()
+
+            if not hasContent(words): 
+                print("System stopped on missing train data.")
+                return None
+
+            generator = SampleGenerator(words)
+            samples = generator.GenerateDatasetSamples()
+
+            for sample in samples:
+                print(sample.GetTuple())
+
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+            sys.exit(1)
     
     def ExecuteDatasetToJson(self):
         """
@@ -100,6 +115,7 @@ class AmbiguityMapper():
             template = "An exception of type {0} occurred in [Main.ExecuteDatasetToJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+            sys.exit(1)
 
     def ExecuteRawDatasetCollection(self):
         try:
@@ -136,6 +152,7 @@ class AmbiguityMapper():
             template = "An exception of type {0} occurred in [Main.SentencesForWordsAPICollector]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+            sys.exit(1)
 
     def MakeFolderIfMissing(self, folder_path:str):
         """
