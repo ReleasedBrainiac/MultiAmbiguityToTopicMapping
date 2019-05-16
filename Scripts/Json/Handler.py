@@ -1,6 +1,6 @@
 import json
 import os
-from SupportMethods.ContentSupport import isNotNone
+from SupportMethods.ContentSupport import isNotNone, hasContent
 from Models.DataModels import Word, Category
 
 class Handler():
@@ -110,15 +110,23 @@ class Handler():
 
     def ReadFromJson(self):
         try:
-            data = None
+            categories:list = []
+            words:list = []
+            dataset = None
 
             with open(self._file_name, "r+", encoding=self._encoding) as json_file:
-                dataset = json.load(json_file)
+                dataset = json.load(json_file)[self._json_name]
 
-            for words, word in dataset.items():
-                print("Words: ", words)
+            for word_name, word in dataset.items():
+                for category_name, category in word.items():
+                    sentences = [v for v in category. values()]
+                    if hasContent(sentences):    
+                        categories.append(Category(category_name, sentences))
 
+                if hasContent(categories):
+                    words.append(Word(word_name, categories))
 
+            return words
         except Exception as ex:
             template = "An exception of type {0} occurred in [JsonBuilder.ReadFromJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
