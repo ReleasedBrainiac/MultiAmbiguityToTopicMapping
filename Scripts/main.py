@@ -24,11 +24,12 @@ class AmbiguityMapper():
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
     COLLECT_CORPUS:str = "deu_news_2012_1M"
     COLLECT_TASK:str = "sentences"
-    DATASET_PATH:str = "Dataset/"
+    DATASET_PATH:str = "Datasets/"
     DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"
     DATASET_SINGLE_FILE_TYP = "txt"
-    JSON_PATH = "dataset.json"
-    JSON_NAME = "dataset"
+    JSON_NAME = "dataset.json"
+    JSON_SUB_FOLDER = DATASET_PATH+"Json/"
+    JSON_PATH = JSON_SUB_FOLDER + JSON_NAME
 
     
     def Execute(self):
@@ -79,17 +80,21 @@ class AmbiguityMapper():
             message = template.format(type(ex).__name__, ex.args)
             print(message)
     
-    def ExecuteDatasetToJson(self, json_path:str):
+    def ExecuteDatasetToJson(self):
+        """
+        This method allow to store the dataset as preprocessed json structure.
+        """   
         try:
+            self.MakeFolderIfMissing(self.JSON_SUB_FOLDER)
             builder:Builder = Builder(self.JSON_PATH, self.JSON_NAME)
             words:list = []
 
             for file_item in os.listdir(self.DATASET_PATH):
-                composite_path:str = self.DATASET_PAT + file_item
-                if file_item is str and os.path.exists(composite_path): 
+                composite_path:str = self.DATASET_PATH + file_item
+                if os.path.exists(composite_path) and os.path.isfile(composite_path): 
                     words.append(Word(file_item.replace(".txt","").lower(), Reader(composite_path).CategoriesReader()))
-
-            builder.NewWords(words)
+            
+            builder.WriteToJson(builder.NewWords(words))
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteDatasetToJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -97,9 +102,7 @@ class AmbiguityMapper():
 
     def ExecuteRawDatasetCollection(self):
         try:
-            if not os.path.exists(self.DATASET_PATH): 
-                os.mkdir(self.DATASET_PATH)
-
+            self.MakeFolderIfMissing(self.DATASET_PATH)
             self.SentencesForWordsAPICollector(Reader(self.COLLECT_WORD_LIST_PATH).LinesToList())
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteRawDatasetCollection]. Arguments:\n{1!r}"
@@ -130,6 +133,19 @@ class AmbiguityMapper():
                                     in_context=None)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.SentencesForWordsAPICollector]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def MakeFolderIfMissing(self, folder_path:str):
+        """
+        This method creates a missing folder.
+            :param folder_path:str: 
+        """   
+        try:
+            if not os.path.exists(folder_path): 
+                os.mkdir(folder_path)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Main.MakeFolderIfMissing]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
