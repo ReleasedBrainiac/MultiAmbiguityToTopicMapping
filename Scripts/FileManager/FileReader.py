@@ -43,7 +43,7 @@ class Reader:
             category_name:str = None
             categories:list = []
 
-            with open(self._path, 'r', encoding=self._reader_encoding) as fileIn:
+            with open(self._path, 'r+', encoding=self._reader_encoding) as fileIn:
                 for line in fileIn.readlines(): 
                     line = line.replace("\n","")
 
