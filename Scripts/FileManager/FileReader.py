@@ -6,8 +6,6 @@ class Reader:
     This class provides a FileReader for text files.
     """
 
-    _reader_encoding = 'utf-8'
-
     def __init__(self, path:str =None):
         """
         The class constructor. 
@@ -26,8 +24,11 @@ class Reader:
         """
         try:
             look_up_elements = []
-            with open(self._path, 'r', encoding=self._reader_encoding) as fileIn:
-                for line in fileIn.readlines(): look_up_elements.append(line.replace("\n",""))
+            with open(self._path, 'r') as fileIn:
+                for line in fileIn.readlines(): 
+                    line = line.replace("\n","")
+                    print(line)
+                    look_up_elements.append(line)
             return look_up_elements
         except Exception as ex:
             template = "An exception of type {0} occurred in [FileReader.LinesToList]. Arguments:\n{1!r}"
@@ -43,7 +44,7 @@ class Reader:
             category_name:str = None
             categories:list = []
 
-            with open(self._path, 'r+', encoding=self._reader_encoding) as fileIn:
+            with open(self._path, 'r+') as fileIn:
                 for line in fileIn.readlines(): 
                     line = line.replace("\n","")
 
