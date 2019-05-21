@@ -19,10 +19,10 @@ class AmbiguityMapper():
 
     # For pulling raw data samples
     _process:Process = Process.DATA_COLLECTION
-    COLLECT_WORD_LIST_PATH:str = "reduced_polysem.txt"
-    COLLECTING_LIMIT:int = 1000
+    COLLECT_WORD_LIST_PATH:str = "polysem.txt" #"reduced_polysem.txt"
+    COLLECTING_LIMIT:int = 50
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
-    COLLECT_CORPUS:str = "deu_news_2012_1M"
+    COLLECT_CORPUS:str = "deu_news_2012_1M" #"deu_wikipedia_2010_1M"
     COLLECT_TASK:str = "sentences"
     DATASET_PATH:str = "Datasets/"
     DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"

@@ -49,15 +49,16 @@ class UniLeipzigAPICaller():
             if isNotNone(self._search_url):
                 response = requests.get(self._search_url)
 
-                if response.status_code is 200:
+                if isNotNone(response) and response.status_code is 200:
                     json_content = json.loads(response.content)
 
                     if json_content["count"] > 0:
                         return json_content
-                else:
-                    if (input("Request failed on ["+self._search_word+"]! Retry? (j/n)") is "j"): 
-                        self.GetRequestJson()
+                #else:
+                #    if (input("Request failed on ["+self._search_word+"]! Retry? (j/n)") is "j"): 
+                #        self.GetRequestJson()
 
+            print("Request failed on ["+self._search_word+"]!")
             return None
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetRequestJson]. Arguments:\n{1!r}"
