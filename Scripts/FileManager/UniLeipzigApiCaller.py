@@ -33,7 +33,8 @@ class UniLeipzigAPICaller():
         This function constructs the url.
         """   
         try:
-            self._search_url = self._base_url + self._corpus +"/" + self._task +"/" + self._search_word + self._search_url_param + str(self._search_limit)
+            if isNotNone(self._search_word):
+                self._search_url = self._base_url + self._corpus +"/" + self._task +"/" + self._search_word + self._search_url_param + str(self._search_limit)
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.UrlBuilder]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -45,14 +46,19 @@ class UniLeipzigAPICaller():
         """   
         try:
             self.UrlBuilder()
-            response = requests.get(self._search_url)
-            if response.status_code is 200:
-                return json.loads(response.content)
-            else:
-                print("Request failed for ["+self._search_word+"]!")
-                #answer = input("Retry? (j/n)")
-                #if (answer is "j"): self.GetRequestJson()
-                return None
+            if isNotNone(self._search_url):
+                response = requests.get(self._search_url)
+
+                if response.status_code is 200:
+                    json_content = json.loads(response.content)
+
+                    if json_content["count"] > 0:
+                        return json_content
+                else:
+                    if (input("Request failed on ["+self._search_word+"]! Retry? (j/n)") is "j"): 
+                        self.GetRequestJson()
+
+            return None
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetRequestJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -65,10 +71,13 @@ class UniLeipzigAPICaller():
         try:    
             if (self._task is "sentences"):
                 sentences_list = []
-                sentences = self.GetRequestJson()['sentences']
-                for sentence_obj in sentences: 
-                    sentences_list.append(sentence_obj['sentence'])
-                return sentences_list
+                json = self.GetRequestJson()
+                if isNotNone(json):
+                    for sentence_obj in json['sentences']: 
+                        sentences_list.append(sentence_obj['sentence'])
+                    return sentences_list
+                else:
+                    return None
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetFoundSentences]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)

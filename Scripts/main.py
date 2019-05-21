@@ -12,15 +12,15 @@ from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 from Models.Enums import Process
 from Models.DataModels import Word
-from SupportMethods.ContentSupport import hasContent
+from SupportMethods.ContentSupport import hasContent, isNotNone
 from Models.Samples import SampleGenerator
 
 class AmbiguityMapper():
 
     # For pulling raw data samples
     _process:Process = Process.DATA_COLLECTION
-    COLLECT_WORD_LIST_PATH:str = "polysem.txt"
-    COLLECTING_LIMIT:int = 30
+    COLLECT_WORD_LIST_PATH:str = "reduced_polysem.txt"
+    COLLECTING_LIMIT:int = 1000
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
     COLLECT_CORPUS:str = "deu_news_2012_1M"
     COLLECT_TASK:str = "sentences"
@@ -142,7 +142,7 @@ class AmbiguityMapper():
                                                                 self.COLLECT_API_BASE_URL,
                                                                 self.COLLECT_CORPUS,
                                                                 self.COLLECT_TASK).GetFoundSentences()
-                if (len(word_sentences_results) >= min_count):
+                if isNotNone(word_sentences_results) and (len(word_sentences_results) >= min_count):
                     composite_path = self.DATASET_RAW_PATH + word + "." + self.DATASET_SINGLE_FILE_TYP
                     open(composite_path, "w+").close()
                     writer = Writer(input_path=composite_path, 

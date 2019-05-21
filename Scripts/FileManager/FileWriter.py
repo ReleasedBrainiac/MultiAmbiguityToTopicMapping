@@ -21,7 +21,8 @@ class Writer:
         """   
         try:
             self._out_path = (input_path+'.'+ file_extender) if isNotEmptyString(file_extender) else input_path
-            print('Destination: ', self._out_path)
+
+            print("Store Results [",self._out_path,"]")
 
             if isNotNone(self._out_path):
                 if isNotNone(in_elements):
