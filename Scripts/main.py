@@ -18,7 +18,7 @@ from Models.Samples import SampleGenerator
 class AmbiguityMapper():
 
     # For pulling raw data samples
-    _process:Process = Process.DATA_TO_NETWORK
+    _process:Process = Process.DATA_COLLECTION
     COLLECT_WORD_LIST_PATH:str = "polysem.txt"
     COLLECTING_LIMIT:int = 30
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
