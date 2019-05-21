@@ -26,9 +26,9 @@ class Reader:
             look_up_elements = []
             with open(self._path, 'r') as fileIn:
                 for line in fileIn.readlines(): 
-                    line = line.replace("\n","")
-                    print(line)
-                    look_up_elements.append(line)
+                    if len(line) > 0:
+                        line = line.replace("\n","")
+                        look_up_elements.append(line)
             return look_up_elements
         except Exception as ex:
             template = "An exception of type {0} occurred in [FileReader.LinesToList]. Arguments:\n{1!r}"

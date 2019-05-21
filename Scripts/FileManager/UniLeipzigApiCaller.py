@@ -49,9 +49,10 @@ class UniLeipzigAPICaller():
             if response.status_code is 200:
                 return json.loads(response.content)
             else:
-                answer = input("Request failed for ["+self._search_word+"]! Retry? (j/n)")
-                if (answer is "j"): self.GetRequestJson()
-                else: return None
+                print("Request failed for ["+self._search_word+"]!")
+                #answer = input("Retry? (j/n)")
+                #if (answer is "j"): self.GetRequestJson()
+                return None
         except Exception as ex:
             template = "An exception of type {0} occurred in [UniLeipzigAPICaller.GetRequestJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
