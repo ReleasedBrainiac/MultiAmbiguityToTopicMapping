@@ -20,9 +20,9 @@ class AmbiguityMapper():
     # For pulling raw data samples
     _process:Process = Process.DATA_COLLECTION
     COLLECT_WORD_LIST_PATH:str = "polysem.txt" #"reduced_polysem.txt"
-    COLLECTING_LIMIT:int = 50
+    COLLECTING_LIMIT:int = 1000
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
-    COLLECT_CORPUS:str = "deu_news_2012_1M" #"deu_wikipedia_2010_1M"
+    COLLECT_CORPUS:str = "deu_wikipedia_2010_1M" #"deu_news_2012_1M"
     COLLECT_TASK:str = "sentences"
     DATASET_PATH:str = "Datasets/"
     DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"
@@ -120,7 +120,7 @@ class AmbiguityMapper():
     def ExecuteRawDatasetCollection(self):
         try:
             self.MakeFolderIfMissing(self.DATASET_PATH)
-            self.SentencesForWordsAPICollector(Reader(self.COLLECT_WORD_LIST_PATH).LinesToList())
+            self.SentencesForWordsAPICollector(Reader(self.COLLECT_WORD_LIST_PATH).LinesToList(), self.COLLECTING_LIMIT)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteRawDatasetCollection]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -148,6 +148,9 @@ class AmbiguityMapper():
                     writer = Writer(input_path=composite_path, 
                                     in_elements=word_sentences_results, 
                                     in_context=None)
+                else:
+                    if isNotNone(word_sentences_results):
+                        print("Word [",word,"] had ", len(word_sentences_results), "results!")
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.SentencesForWordsAPICollector]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
