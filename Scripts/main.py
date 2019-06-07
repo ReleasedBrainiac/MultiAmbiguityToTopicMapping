@@ -34,6 +34,23 @@ class AmbiguityMapper():
     _console_time_format = "%d.%m.%Y %H:%M:%S"
     _time_now:str = None
     
+
+    '''
+    Ressourcen zum Doc2Vec Ansatz
+
+    https://towardsdatascience.com/multi-class-text-classification-with-doc2vec-logistic-regression-9da9947b43f4
+    https://www.kaggle.com/alyosama/doc2vec-with-keras-0-77
+    https://radimrehurek.com/gensim/models/doc2vec.html
+    https://radimrehurek.com/gensim/models/doc2vec.html#gensim.models.doc2vec.TaggedDocument
+    https://stackoverflow.com/questions/45125798/how-to-use-taggeddocument-in-gensim
+    https://stackoverflow.com/questions/50564928/how-to-use-sentence-vectors-from-doc2vec-in-keras-sequntial-model-for-sentence-s    
+    https://medium.com/explorations-in-language-and-learning/how-to-obtain-sentence-vectors-2a6d88bd3c8b
+
+    Outstanding Resources
+    https://stackoverflow.com/questions/29760935/how-to-get-vector-for-a-sentence-from-the-word2vec-of-tokens-in-sentence
+
+    '''
+
     def Execute(self):
         """
         The main method of the tool.
