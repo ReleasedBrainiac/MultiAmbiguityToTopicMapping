@@ -8,6 +8,8 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   - pip install tensorflow
 - Keras Version:        2.2.2   => https://keras.io/
   -  pip install keras
+- Genism                        => https://radimrehurek.com/gensim/install.html
+  - pip install --upgrade gensim
 
 ## Current developement status
 - Tool is untested, in proceeding
