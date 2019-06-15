@@ -1,11 +1,12 @@
 from SupportMethods.ContentSupport import isStr, isNotNone, isNone
 from SupportMethods.ContentSupport import AssertNotNone, isNotEmptyString
+import sys
 
 class Writer:
     """
     This class provides a Writer to store string or list of string context.
     """
-    _writer_encoding = 'utf-8'
+    ENCODING:str = sys.stdout.encoding or sys.getfilesystemencoding()
     _context = None
     _elements = None
     _out_path = None
@@ -48,7 +49,7 @@ class Writer:
         This function saves stringified context into a given file.
         """
         try:
-            with open(self._out_path, 'w', encoding=self._writer_encoding) as fileOut:
+            with open(self._out_path, 'w+', encoding=self.ENCODING) as fileOut:
                 if isNotNone(self._context) and isStr(self._context):
                     fileOut.write(self._context)
                     fileOut.flush()
@@ -64,7 +65,7 @@ class Writer:
         This function save a string collection to a given file.
         """
         try:
-            with open(self._out_path, 'w', encoding=self._writer_encoding) as fileOut:
+            with open(self._out_path, 'w+', encoding=self.ENCODING) as fileOut:
                 for elem in self._elements:
                     if isNotNone(elem):
                         fileOut.write(elem+"\n")

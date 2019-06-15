@@ -1,10 +1,13 @@
 from Models.DataModels import Category
 from SupportMethods.ContentSupport import isNotNone, isNone, hasContent
+import sys
 
 class Reader:
     """
     This class provides a FileReader for text files.
     """
+
+    ENCODING:str = sys.stdout.encoding or sys.getfilesystemencoding()
 
     def __init__(self, path:str =None):
         """
@@ -24,7 +27,7 @@ class Reader:
         """
         try:
             look_up_elements = []
-            with open(self._path, 'r') as fileIn:
+            with open(self._path, 'r+',encoding=self.ENCODING) as fileIn:
                 for line in fileIn.readlines(): 
                     if len(line) > 0:
                         line = line.replace("\n","")
@@ -44,7 +47,7 @@ class Reader:
             category_name:str = None
             categories:list = []
 
-            with open(self._path, 'r+') as fileIn:
+            with open(self._path, 'r+',encoding=self.ENCODING) as fileIn:
                 for line in fileIn.readlines(): 
                     line = line.replace("\n","")
 

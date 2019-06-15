@@ -2,8 +2,8 @@
 import os, sys
 import platform as pf
 from time import gmtime, strftime
-import keras
-import tensorflow as tf
+#import keras
+#import tensorflow as tf
 
 from FolderManager.Manager import FolderManager
 from Json.Handler import Handler
@@ -18,7 +18,7 @@ from Models.Samples import SampleGenerator
 class AmbiguityMapper():
 
     # For pulling raw data samples
-    _process:Process = Process.DATA_COLLECTION
+    _process:Process = Process.DATA_TO_JSON
     COLLECT_WORD_LIST_PATH:str = "polysem.txt" #"reduced_polysem.txt"
     COLLECTING_LIMIT:int = 1000
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
@@ -75,10 +75,13 @@ class AmbiguityMapper():
             print("Platform:\t\t=> ", pf.platform())
             print("CPU:\t\t\t=> ", pf.processor())
             print("Python Version:\t\t=> ", pf.python_version())
-            print("Tensorflow version: \t=> ", tf.__version__)
-            print("Keras version: \t\t=> ", keras.__version__, '\n')
+            print("Encding:\t\t=> ", sys.stdout.encoding or sys.getfilesystemencoding())
+            #print("Tensorflow version: \t=> ", tf.__version__)
+            #print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             
+            
+
             if self._process is Process.DATA_TO_NETWORK:
                 self.ExecuteANNProcessing()
             elif self._process is Process.DATA_TO_JSON:
@@ -122,9 +125,10 @@ class AmbiguityMapper():
             handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
             words:list = []
 
-            for file_item in os.listdir(self.DATASET_PATH):
-                composite_path:str = self.DATASET_PATH + file_item
+            for file_item in os.listdir(self.DATASET_RAW_PATH):
+                composite_path:str = self.DATASET_RAW_PATH + file_item
                 if os.path.exists(composite_path) and os.path.isfile(composite_path): 
+                    print(composite_path)
                     words.append(Word(file_item.replace(".txt","").lower(), Reader(composite_path).CategoriesReader()))
             
             handler.WriteToJson(handler.NewWords(words))
