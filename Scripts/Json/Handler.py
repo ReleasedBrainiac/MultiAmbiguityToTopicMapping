@@ -15,7 +15,7 @@ class Handler():
         """   
         try:
             self._file_name = file_name  if isNotNone(file_name) else "dataset.json"
-            self._json_name = json_name if isNotNone(json_name) else "Dataset"
+            self._json_name = json_name if isNotNone(json_name) else "dataset"
             if not os.path.exists(self._file_name): 
                 self.InitJson()
         except Exception as ex:
