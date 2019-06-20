@@ -18,20 +18,23 @@ from Models.Samples import SampleGenerator
 class AmbiguityMapper():
 
     # For pulling raw data samples
-    _process:Process = Process.DATA_TO_JSON
+    _process:Process = Process.DATA_TO_NETWORK
     COLLECT_WORD_LIST_PATH:str = "polysem.txt" #"reduced_polysem.txt"
     COLLECTING_LIMIT:int = 1000
     COLLECT_API_BASE_URL:str = "http://api.corpora.uni-leipzig.de/ws/sentences/"
     COLLECT_CORPUS:str = "deu_wikipedia_2010_1M" #"deu_news_2012_1M"
     COLLECT_TASK:str = "sentences"
     DATASET_PATH:str = "Datasets/"
-    DATASET_RAW_PATH:str = DATASET_PATH + "Basis/"
-    DATASET_SINGLE_FILE_TYP = "txt"
-    JSON_NAME = "dataset"
-    JSON_SUB_FOLDER = DATASET_PATH+"Json/"
-    _json_path = JSON_SUB_FOLDER + JSON_NAME + ".json"
-    _file_time_format:str = "%Y%m%d %H_%M_%S"
-    _console_time_format = "%d.%m.%Y %H:%M:%S"
+    DATASET_RAW_PATH:str = DATASET_PATH + "ManualGenerated/" #"Basis/"
+    DATASET_SINGLE_FILE_TYP:str = "txt"
+    JSON_NAME:str = "dataset"
+    JSON_SUB_FOLDER:str = DATASET_PATH+"Json/"
+    JSON_FILE_EXT:str = ".json"
+
+    _dataset_time_signature:str = "20190620_13_49_23 "
+    _json_path:str = JSON_SUB_FOLDER + _dataset_time_signature + JSON_NAME + JSON_FILE_EXT
+    _file_time_format:str = "%Y%m%d_%H_%M_%S "
+    _console_time_format:str = "%d.%m.%Y %H:%M:%S "
     _time_now:str = None
     
 
@@ -60,7 +63,7 @@ class AmbiguityMapper():
         """  
         try:
             self._time_now = strftime(self._console_time_format, gmtime())
-            self._json_path += strftime(self._file_time_format, gmtime())
+            
 
             print("\n#######################################")
             print("######## Ambiguity Mapper ANN ########")
@@ -88,6 +91,7 @@ class AmbiguityMapper():
                 self.ExecuteANNProcessing()
             elif self._process is Process.DATA_TO_JSON:
                 print("######### RUN JSON CONVERSION #########")
+                self._json_path = self.JSON_SUB_FOLDER + strftime(self._file_time_format, gmtime()) + self.JSON_NAME + self.JSON_FILE_EXT
                 print("Dataset: ", self.DATASET_RAW_PATH)
                 print("Destination: ", self._json_path)
                 self.ExecuteDatasetToJson()
@@ -107,7 +111,6 @@ class AmbiguityMapper():
     
     def ExecuteANNProcessing(self):
         try:
-            generator:SampleGenerator = None
             handler:Handler = Handler(self._json_path, self.JSON_NAME)
             words:list = handler.ReadFromJson()
 
@@ -115,9 +118,12 @@ class AmbiguityMapper():
                 print("System stopped on missing train data.")
                 sys.exit(1)
 
-            generator = SampleGenerator(words)
-            samples = [v.GetTuple() for v in  generator.GenerateDatasetSamples()]
+            generator:SampleGenerator = SampleGenerator(words)
+            docs, labels = generator.GenerateDocsAndLabels(generator.GenerateTaggedTuples())
+
+
             
+
             #TODO: Currently not in use since the pipe and the network are still missing.
 
         except Exception as ex:
