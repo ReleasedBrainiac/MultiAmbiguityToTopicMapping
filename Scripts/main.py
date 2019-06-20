@@ -29,7 +29,7 @@ class AmbiguityMapper():
     DATASET_SINGLE_FILE_TYP = "txt"
     JSON_NAME = "dataset"
     JSON_SUB_FOLDER = DATASET_PATH+"Json/"
-    JSON_PATH = JSON_SUB_FOLDER + JSON_NAME + ".json"
+    _json_path = JSON_SUB_FOLDER + JSON_NAME + ".json"
     _file_time_format:str = "%Y%m%d %H_%M_%S"
     _console_time_format = "%d.%m.%Y %H:%M:%S"
     _time_now:str = None
@@ -60,6 +60,7 @@ class AmbiguityMapper():
         """  
         try:
             self._time_now = strftime(self._console_time_format, gmtime())
+            self._json_path += strftime(self._file_time_format, gmtime())
 
             print("\n#######################################")
             print("######## Ambiguity Mapper ANN ########")
@@ -80,15 +81,24 @@ class AmbiguityMapper():
             #print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             
-            
-
+            print("#######################################")
             if self._process is Process.DATA_TO_NETWORK:
+                print("######## RUN MACHINE LEARNING #########")
+                print("Dataset: ", self._json_path)
                 self.ExecuteANNProcessing()
             elif self._process is Process.DATA_TO_JSON:
+                print("######### RUN JSON CONVERSION #########")
+                print("Dataset: ", self.DATASET_RAW_PATH)
+                print("Destination: ", self._json_path)
                 self.ExecuteDatasetToJson()
             else:
+                print("######## RUN DATA COLLECTION ##########")
+                print("Base_Url: ", self.COLLECT_API_BASE_URL)
+                print("Destination: ", self.JSON_SUB_FOLDER)
+
                 self.ExecuteRawDatasetCollection()
 
+            print("#######################################")
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteTool]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -98,7 +108,7 @@ class AmbiguityMapper():
     def ExecuteANNProcessing(self):
         try:
             generator:SampleGenerator = None
-            handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
+            handler:Handler = Handler(self._json_path, self.JSON_NAME)
             words:list = handler.ReadFromJson()
 
             if not hasContent(words): 
@@ -122,7 +132,7 @@ class AmbiguityMapper():
         """   
         try:
             self.MakeFolderIfMissing(self.JSON_SUB_FOLDER)
-            handler:Handler = Handler(self.JSON_PATH, self.JSON_NAME)
+            handler:Handler = Handler(self._json_path, self.JSON_NAME)
             words:list = []
 
             for file_item in os.listdir(self.DATASET_RAW_PATH):
@@ -166,9 +176,9 @@ class AmbiguityMapper():
                 if isNotNone(word_sentences_results) and (len(word_sentences_results) >= min_count):
                     composite_path = self.DATASET_RAW_PATH + word + "." + self.DATASET_SINGLE_FILE_TYP
                     open(composite_path, "w+").close()
-                    writer = Writer(input_path=composite_path, 
-                                    in_elements=word_sentences_results, 
-                                    in_context=None)
+                    Writer( input_path=composite_path, 
+                            in_elements=word_sentences_results, 
+                            in_context=None)
                 else:
                     if isNotNone(word_sentences_results):
                         print("Word [",word,"] had ", len(word_sentences_results), "results!")
