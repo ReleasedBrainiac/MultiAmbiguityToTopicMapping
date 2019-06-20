@@ -42,6 +42,7 @@ class AmbiguityMapper():
     Ressourcen zum Doc2Vec Ansatz
 
     https://towardsdatascience.com/multi-class-text-classification-with-doc2vec-logistic-regression-9da9947b43f4
+    https://github.com/susanli2016/NLP-with-Python/blob/master/Doc2Vec%20Consumer%20Complaint.ipynb
     https://www.kaggle.com/alyosama/doc2vec-with-keras-0-77
     https://radimrehurek.com/gensim/models/doc2vec.html
     https://radimrehurek.com/gensim/models/doc2vec.html#gensim.models.doc2vec.TaggedDocument
