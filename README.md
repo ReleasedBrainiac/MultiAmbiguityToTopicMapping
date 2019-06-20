@@ -9,7 +9,11 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
 - Keras Version:        2.2.2   => https://keras.io/
   -  pip install keras
 - Genism                        => https://radimrehurek.com/gensim/install.html
-  - pip install --upgrade gensim
+  - pip install -U gensim
+- NLTK                          => http://www.nltk.org/data.html 
+  - pip install -U nltk
+- NLTK Corpora                  => http://www.nltk.org/data.html
+  - read instructions at the webpage
 
 ## Current developement status
 - Tool is untested, in proceeding
