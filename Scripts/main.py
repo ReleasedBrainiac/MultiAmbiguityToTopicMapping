@@ -12,8 +12,9 @@ from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 from Models.Enums import Process
 from Models.DataModels import Word
-from SupportMethods.ContentSupport import hasContent, isNotNone
+from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf
 from Models.Samples import SampleGenerator
+from MachineLearning.DataPreprocessor.Doc2VecHandler import Doc2VecHandler
 
 class AmbiguityMapper():
 
@@ -54,6 +55,8 @@ class AmbiguityMapper():
     https://stackoverflow.com/questions/29760935/how-to-get-vector-for-a-sentence-from-the-word2vec-of-tokens-in-sentence
 
     '''
+
+    #TODO implement logger maybe the (F)ile(A)nd(C)onsoleLogger of my master examination
 
     def Execute(self):
         """
@@ -119,11 +122,18 @@ class AmbiguityMapper():
                 print("System stopped on missing train data.")
                 sys.exit(1)
 
+            
+            print("-------- Generate Dataset D2V ---------")
             generator:SampleGenerator = SampleGenerator(words)
             docs, labels = generator.GenerateDocsAndLabels(generator.GenerateTaggedTuples())
+            print("Docs: ", len(docs))
+            print("Labels: ", len(labels))
 
+            print("-------- Build Text Model D2V ---------")
+            d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, labels)
+            sentences = d2v_handler.GenerateLabeledSentences()
+            text_model = d2v_handler.GenerateTextModel(sentences)
 
-            
 
             #TODO: Currently not in use since the pipe and the network are still missing.
 
