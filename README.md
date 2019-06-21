@@ -14,6 +14,8 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   - pip install -U nltk
 - NLTK Corpora                  => http://www.nltk.org/data.html
   - read instructions at the webpage
+- Pandas                0.24.2  => https://pandas.pydata.org/pandas-docs/stable/install.html
+  - pip install -U pandas
 
 ## Current developement status
 - Tool is untested, in proceeding
