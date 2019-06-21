@@ -131,3 +131,12 @@ class Handler():
             template = "An exception of type {0} occurred in [JsonBuilder.ReadFromJson]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
+
+    def GetJson(self):
+        try:
+            with open(self._file_name, "r+", encoding=self._encoding) as json_file:
+                return json.load(json_file)[self._json_name]
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [JsonBuilder.GetJson]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
