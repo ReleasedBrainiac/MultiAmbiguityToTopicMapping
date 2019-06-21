@@ -328,6 +328,42 @@ def setOrDefault(input, default, wantSet:bool):
         print('WRONG INPUT FOR [setOrDefault]')
         return input
 
+def SetNumberIf(input_number, default, inclusive_border, check_max:bool):
+    """
+    This method return the input number if the value satisfies the check border. Otherwise the default number will be returned.
+    The direction of the check can be modified with the boolean. 
+    Attention the border values is INCLUSIVELY used!
+        :param input_number: given number
+        :param default: default return number
+        :param inclusive_border: border value
+        :param check_max:bool: direction of the check (True mean x <= border value)
+    """
+    try:
+        if isNumber(input_number) and isNumber(default) and isNumber(inclusive_border):
+            if (check_max):
+                return input_number if input_number <= inclusive_border else default
+            else:
+                return input_number if input_number >= inclusive_border else default
+    except Exception as ex:
+        template = "An exception of type {0} occurred in [ContentSupport.SetNumberIf]. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
+
+def SetIfEquals(input_context, default, exact_check_element):
+    """
+    This method return a value if it exactly matches the check element.
+        :param input_context: given context
+        :param default: default return
+        :param exact_check_element: exact type and value match element.
+    """
+    try:
+        return input_context if isXTypeEqualY(input_context, exact_check_element) and (input_context == exact_check_element) else default
+    except Exception as ex:
+        template = "An exception of type {0} occurred in [ContentSupport.SetStringIf]. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
+
+
 
 # Basic values, list and matrix operations.
 def ReorderListByIndices(reorder_list:list, ordering_indices:list):
