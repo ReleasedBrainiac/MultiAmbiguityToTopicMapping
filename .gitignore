@@ -1,4 +1,5 @@
 *.pyc
+*.d2v
 *.ouput
 *.txt
 *.json
