@@ -132,7 +132,10 @@ class Handler():
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def GetJson(self):
+    def GetJsonString(self):
+        """
+        This method returns the json string of file and json dataset name defined in the constructor.
+        """
         try:
             with open(self._file_name, "r+", encoding=self._encoding) as json_file:
                 return json.load(json_file)[self._json_name]
