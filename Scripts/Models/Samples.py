@@ -107,7 +107,7 @@ class SampleGenerator(object):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def GenerateDocsAndLabels(self, samples:list = None):
+    def GenerateLabelsAndDocs(self, samples:list = None):
         """
         This function generates 2 lists from 2D tuple list. [Docs, Labels]
         """
@@ -117,7 +117,7 @@ class SampleGenerator(object):
             else:
                 return None
         except Exception as ex:
-            template = "An exception of type {0} occurred in [SampleGenerator.GenerateDocsAndLabels]. Arguments:\n{1!r}"
+            template = "An exception of type {0} occurred in [SampleGenerator.GenerateLabelsAndDocs]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
