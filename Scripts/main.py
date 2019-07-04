@@ -31,12 +31,10 @@ class AmbiguityMapper():
     JSON_NAME:str = "dataset"
     JSON_SUB_FOLDER:str = DATASET_PATH+"Json/"
     JSON_FILE_EXT:str = ".json"
+    FILE_TIME_FORMAT:str = "%Y%m%d_%H_%M_%S "
+    CONSOLE_TIME_FORMAT:str = "%d.%m.%Y %H:%M:%S "
 
-    _dataset_time_signature:str = "20190620_13_49_23 "
-    _json_path:str = JSON_SUB_FOLDER + _dataset_time_signature + JSON_NAME + JSON_FILE_EXT
-    _file_time_format:str = "%Y%m%d_%H_%M_%S "
-    _console_time_format:str = "%d.%m.%Y %H:%M:%S "
-    _time_now:str = None
+    _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
     
 
     '''
@@ -66,15 +64,12 @@ class AmbiguityMapper():
             2. Execute the network on the given dataset (includes cleaning but no storing of the AMR). 
         """  
         try:
-            self._time_now = strftime(self._console_time_format, gmtime())
-            
-
             print("\n#######################################")
             print("######## Ambiguity Mapper ANN ########")
             print("#######################################\n")
 
             print("~~~~~~~~~~ System Informations ~~~~~~~~")
-            print("Execution Time:\t\t=> ", self._time_now)
+            print("Execution Time:\t\t=> ", strftime(self.CONSOLE_TIME_FORMAT, gmtime()))
             print("Used OS:\t\t=> ", pf.system())
             print("Release:\t\t=> ", pf.release())
             print("Version:\t\t=> ", pf.version())
@@ -95,7 +90,7 @@ class AmbiguityMapper():
                 self.ExecuteANNProcessing()
             elif self._process is Process.DATA_TO_JSON:
                 print("######### RUN JSON CONVERSION #########")
-                self._json_path = self.JSON_SUB_FOLDER + strftime(self._file_time_format, gmtime()) + self.JSON_NAME + self.JSON_FILE_EXT
+                self._json_path = self.JSON_SUB_FOLDER + strftime(FILE_TIME_FORMAT, gmtime()) + '_' + self.JSON_NAME + self.JSON_FILE_EXT
                 print("Dataset: ", self.DATASET_RAW_PATH)
                 print("Destination: ", self._json_path)
                 self.ExecuteDatasetToJson()
@@ -124,8 +119,8 @@ class AmbiguityMapper():
 
             
             print("-------- Generate Dataset D2V ---------")
-            generator:SampleGenerator = SampleGenerator(words)
-            docs, labels = generator.GenerateDocsAndLabels(generator.GenerateTaggedTuples())
+            generator = SampleGenerator(words)
+            labels, docs = generator.GenerateLabelsAndDocs(generator.GenerateTaggedTuples())
             print("Docs: ", len(docs))
             print("Labels: ", len(labels))
 
