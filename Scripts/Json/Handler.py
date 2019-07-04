@@ -109,6 +109,9 @@ class Handler():
             print(message)
 
     def ReadFromJson(self):
+        """
+        This method reads the word definitions from a json file.
+        """   
         try:
             categories:list = []
             words:list = []
@@ -118,6 +121,7 @@ class Handler():
                 dataset = json.load(json_file)[self._json_name]
 
             for word_name, word in dataset.items():
+                categories = []
                 for category_name, category in word.items():
                     sentences = [v for v in category. values()]
                     if hasContent(sentences):    
