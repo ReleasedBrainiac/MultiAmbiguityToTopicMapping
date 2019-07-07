@@ -125,25 +125,31 @@ class AmbiguityMapper():
             
             print("-------- Generate Dataset D2V ---------")
             generator = SampleGenerator(words)
-            labels, docs = generator.GenerateLabelsAndDocs(generator.GenerateTaggedTuples())
+            labels, categories, docs = generator.GenerateLabelsAndDocs(generator.GenerateTuples())
             print("Docs: ", len(docs))
+            print("Categories: ", len(categories))
             print("Labels: ", len(labels))
 
             print("-------- Build Text Model D2V ---------")
             d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, labels)
             sentences = d2v_handler.GenerateLabeledSentences()
-            print(sentences[0])
+
+            print("Doc: ", docs[0])
+            print("Cat: ", categories[0])
+            print("Label: ", labels[0])
+            print("Sent: ", sentences[0])
+
             text_model = d2v_handler.GenerateTextModel(sentences)
 
             text_train_arrays = np.zeros((self.train_size, self.Text_INPUT_DIM))
             text_test_arrays = np.zeros((self.test_size, self.Text_INPUT_DIM))
 
             for i in range(self.train_size):
-                text_train_arrays[i] = text_model.docvecs['t_'+str(i)]
+                text_train_arrays[i] = text_model.docvecs[str(i)]
 
             j=0
             for i in range(self.train_size,self.train_size + self.test_size):
-                text_test_arrays[j] = text_model.docvecs['t_'+str(i)]
+                text_test_arrays[j] = text_model.docvecs[str(i)]
                 j=j+1
     
             print(text_train_arrays[0][:50])
