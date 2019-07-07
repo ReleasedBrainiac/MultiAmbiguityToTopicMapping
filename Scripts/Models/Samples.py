@@ -112,7 +112,7 @@ class SampleGenerator(object):
         This function generates 2 lists from 2D tuple list. [Docs, Labels]
         """
         try:
-            if len(samples[0]) == 2:
+            if len(samples[0]) >= 2 and len(samples[0]) < 4:
                 return zip(*samples)
             else:
                 return None
