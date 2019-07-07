@@ -59,12 +59,12 @@ class Doc2VecHandler(object):
         This method returns labeled senteneces like a tagged document.
         """
         try:
-            sentences=[]
+            sentences = []
             for index in range(len(self._docs)):
 
                 #TODO mapping in große #Docs
 
-                sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), ['t_'+str(index)]))
+                sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), [str(index)]))
             return sentences
         except Exception as ex:
             template = "An exception of type {0} occurred in [Doc2VecHandler.GenerateLabeledSentences]. Arguments:\n{1!r}"
