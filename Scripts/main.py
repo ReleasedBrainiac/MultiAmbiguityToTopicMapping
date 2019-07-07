@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os, sys
+import numpy as np
 import platform as pf
 from time import gmtime, strftime
 #import keras
@@ -33,8 +34,12 @@ class AmbiguityMapper():
     JSON_FILE_EXT:str = ".json"
     FILE_TIME_FORMAT:str = "%Y%m%d_%H_%M_%S "
     CONSOLE_TIME_FORMAT:str = "%d.%m.%Y %H:%M:%S "
+    Text_INPUT_DIM:int = 300
 
-    _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
+    _json_path:str = 'Datasets/Json/20190620_13_49_23 dataset.json'
+    test_size:int = 300
+    train_size:int = 2901 - test_size
+    
     
 
     '''
@@ -90,7 +95,7 @@ class AmbiguityMapper():
                 self.ExecuteANNProcessing()
             elif self._process is Process.DATA_TO_JSON:
                 print("######### RUN JSON CONVERSION #########")
-                self._json_path = self.JSON_SUB_FOLDER + strftime(FILE_TIME_FORMAT, gmtime()) + '_' + self.JSON_NAME + self.JSON_FILE_EXT
+                self._json_path = self.JSON_SUB_FOLDER + strftime(self.FILE_TIME_FORMAT, gmtime()) + '_' + self.JSON_NAME + self.JSON_FILE_EXT
                 print("Dataset: ", self.DATASET_RAW_PATH)
                 print("Destination: ", self._json_path)
                 self.ExecuteDatasetToJson()
@@ -127,7 +132,21 @@ class AmbiguityMapper():
             print("-------- Build Text Model D2V ---------")
             d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, labels)
             sentences = d2v_handler.GenerateLabeledSentences()
+            print(sentences[0])
             text_model = d2v_handler.GenerateTextModel(sentences)
+
+            text_train_arrays = np.zeros((self.train_size, self.Text_INPUT_DIM))
+            text_test_arrays = np.zeros((self.test_size, self.Text_INPUT_DIM))
+
+            for i in range(self.train_size):
+                text_train_arrays[i] = text_model.docvecs['t_'+str(i)]
+
+            j=0
+            for i in range(self.train_size,self.train_size + self.test_size):
+                text_test_arrays[j] = text_model.docvecs['t_'+str(i)]
+                j=j+1
+    
+            print(text_train_arrays[0][:50])
 
 
             #TODO: Currently not in use since the pipe and the network are still missing.
