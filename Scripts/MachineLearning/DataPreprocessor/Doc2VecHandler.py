@@ -64,8 +64,7 @@ class Doc2VecHandler(object):
 
                 #TODO mapping in große #Docs
 
-
-                sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), [self._labels[index]]))
+                sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), ['t_'+str(index)]))
             return sentences
         except Exception as ex:
             template = "An exception of type {0} occurred in [Doc2VecHandler.GenerateLabeledSentences]. Arguments:\n{1!r}"
