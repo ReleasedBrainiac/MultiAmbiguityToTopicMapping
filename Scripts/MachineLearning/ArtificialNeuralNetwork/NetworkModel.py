@@ -11,6 +11,8 @@ class Model(object):
     # => https://keras.io/getting-started/functional-api-guide/
     # => https://keras.io/getting-started/sequential-model-guide/
 
+    self._model = None
+
     def __init__(self, init_shape:tuple, categories:int = -1):
         """
         The constructor.
@@ -20,7 +22,7 @@ class Model(object):
         try:
             self._init_shape:tuple = init_shape
             self._categories:int = categories
-            self._model = self.Create()
+            self.Create()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -50,17 +52,16 @@ class Model(object):
         This method constructs the network model.
         """   
         try:
-            model = Sequential()
-            model.add(self.NewDense(input_shape=self._init_shape))
-            model.add(Dropout(0.3))
-            model.add(self.NewDense())
-            model.add(Dropout(0.3))
-            model.add(self.NewDense())
-            model.add(Dropout(0.5))
-            model.add(self.NewDense(output_dim=80))
-            model.add(self.NewDense(output_dim=self._categories, input_shape=None, activation="softmax"))
-            model.summary()
-            return model
+            self._model = Sequential()
+            self._model.add(self.NewDense(input_shape=self._init_shape))
+            self._model.add(Dropout(0.3))
+            self._model.add(self.NewDense())
+            self._model.add(Dropout(0.3))
+            self._model.add(self.NewDense())
+            self._model.add(Dropout(0.5))
+            self._model.add(self.NewDense(output_dim=80))
+            self._model.add(self.NewDense(output_dim=self._categories, input_shape=None, activation="softmax"))
+            self._model.summary()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Create]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
