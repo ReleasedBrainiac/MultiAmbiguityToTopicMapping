@@ -1,5 +1,9 @@
-from enum import Enum
-from keras import activations
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, LSTM, Embedding, Input, RepeatVector
+from keras.optimizers import SGD
+from keras import regularizers
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class Model(object):
 
@@ -7,44 +11,150 @@ class Model(object):
     # => https://keras.io/getting-started/functional-api-guide/
     # => https://keras.io/getting-started/sequential-model-guide/
 
-    _model = None
-
-    def __init__(self):
+    def __init__(self, init_shape:tuple, categories:int = -1):
+        """
+        The constructor.
+            :param init_shape:tuple: train data input shape
+            :param categories:int: amount of categories
+        """   
         try:
-            return Create()
+            self._init_shape:tuple = init_shape
+            self._categories:int = categories
+            self._model = Create()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def Create(self):
-        # create model
-        model = Sequential()
-        model.add(Dense(8, input_dim=4, activation='relu'))
-        model.add(Dense(3, activation='softmax'))
-        # Compile model
-        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        return model
-
-    def Train(self):
+    def NewDense(self, input_shape:tuple=None, output_dim:int = 256, activation:str='relu', kernel_initializer:str='glorot_normal', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01)):
+        """
+        This method return a predefined Dense layer depending on the inputs.
+            :param input_shape:tuple: input shape of the first layer otherwise set None
+            :param output_dim:int: output dim of the layer
+            :param activation:str: layer activation function
+            :param kernel_initializer:str: kernel generation initializer
+            :param kernel_regularizer: a kernel regulizer
+        """   
         try:
-            pass
+            if input_shape == None:
+                return Dense(output_dim, input_shape, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
+            else:
+                return Dense(output_dim, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Model.NewDense]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def Create(self):
+        """
+        This method constructs the network model.
+        """   
+        try:
+            model = Sequential()
+            model.add(NewDense(input_shape=self._init_shape))
+            model.add(Dropout(0.3))
+            model.add(NewDense(input_shape=None))
+            model.add(Dropout(0.3))
+            model.add(NewDense(input_shape=None))
+            model.add(Dropout(0.5))
+            model.add(NewDense(output_dim=80, input_shape=None))
+            model.add(NewDense(output_dim=self._categories, input_shape=None, activation="softmax"))
+            model.summary()
+            return model
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Model.Create]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def Compile(self, learn_rate:float=0.01, decay:float=1e-6, momentum:float=0.9, nesterov:bool=True, loss_func:str='categorical_crossentropy', metrics:list=['accuracy']):
+        """
+        This method compile a model. Additionally the SGD optimizer will be set.
+            :param learn_rate:float: learning rate
+            :param decay:float: gradient decay
+            :param momentum:float: optimizer momentum
+            :param nesterov:bool: gradient descent accelerating desired
+            :param loss_func:str: desired loss function
+            :param metrics:list: list of desired metrics
+        """   
+        try:
+            sgd = SGD(lr=learn_rate, decay=decay, momentum=momentum, nesterov=nesterov)  
+            self._model.compile(loss=loss_func, optimizer=sgd, metrics=metrics)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Model.Compile]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def Train(self, train_x, train_y, val_split:float = 0.2, eps:int = 20, batches:int = 64):
+        """
+        This method executes the model training process.
+            :param train_x: train input
+            :param train_y: train desired result
+            :param val_split:float: validation split of the train set
+            :param eps:int: train epochs
+            :param batches:int: the dataset batch size
+        """   
+        try:
+            return self._model.fit(train_x, train_y, validation_split=val_split, epochs=eps, batch_size=batches)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Train]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def ShowResultAccuracy(self):
+    def ShowResultAccuracy(self, history):
+        """
+        This method show the train results.
+            :param history: history of the training
+        """   
         try:
-            pass
+            print("Training accuracy: %.2f%% / Validation accuracy: %.2f%%" % (100*history.history['acc'][-1], 100*history.history['val_acc'][-1]))
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.ShowResultAccuracy]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def PredictAndVisualize(self):
+    def PlotResults(self, history, model_description:str, orientation:str = 'landscape', image_type:str = 'png'):
+        """
+        This method plot acc and loss from history and store it into seperate files.
+            :param history: the train history
+            :param model_description:str: name of the model
+            :param orientation:str: image orientation
+            :param image_type:str: image file type
+        """   
         try:
-            pass
+            acc_figure = plt.figure(1)
+            plt.plot(history.history['acc'])
+            plt.plot(history.history['val_acc'])
+            plt.title('model accuracy')
+            plt.ylabel('accuracy')
+            plt.xlabel('epoch')
+            plt.legend(['train', 'valid'], loc='upper left')
+            self.acc_figure.savefig((model_description+'acc_plot.'+image_type), orientation=orientation)
+
+            loss_figure = plt.figure(2)
+            plt.plot(history.history['loss'])
+            plt.plot(history.history['val_loss'])
+            plt.title('model loss')
+            plt.ylabel('loss')
+            plt.xlabel('epoch')
+            plt.legend(['train', 'valid'], loc='upper left')
+            self.loss_figure.savefig((model_description+'loss_plot.'+image_type), orientation=orientation)
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Model.PlotResults]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def PredictAndVisualize(self, test_set, categories:list, submission_file_name:str = "submission_all.csv"):
+        """
+        This method predict results for a given test set and store it in a csv file.
+            :param test_set: test set
+            :param categories:list: list of categorie names 
+            :param submission_file_name:str: file name
+        """   
+        try:
+            submission = pd.DataFrame(self._model.predict_proba(test_set))
+            submission.columns = categories
+            submission.to_csv(submission_file_name, index=False)
+            submission.head()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.PredictAndVisualize]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
