@@ -19,6 +19,7 @@ from Models.DataModels import Word
 from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf, isNumber
 from Models.Samples import SampleGenerator
 from MachineLearning.DataPreprocessor.Doc2VecHandler import Doc2VecHandler
+from MachineLearning.ArtificialNeuralNetwork.NetworkModel import Model
 
 class AmbiguityMapper():
 
@@ -37,12 +38,13 @@ class AmbiguityMapper():
     JSON_FILE_EXT:str = ".json"
     FILE_TIME_FORMAT:str = "%Y%m%d_%H_%M_%S "
     CONSOLE_TIME_FORMAT:str = "%d.%m.%Y %H:%M:%S "
-    Text_INPUT_DIM:int = 300
+    TEXT_INPUT_DIM:int = 300
 
     _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
     _test_data_split:float = 15.0
     _train_size:int = -1
-    test_size:int = -1
+    _test_size:int = -1
+    _model_name = 'Linguistic_MATT_Model'
     
     
 
@@ -129,7 +131,16 @@ class AmbiguityMapper():
                 print("System stopped on missing train data.")
                 sys.exit(1)
 
+            tmp_categories = [word.GetCategories() for word in words]
+            flat_list = [item for sublist in tmp_categories for item in sublist]
             
+            categorie_names = set([category.GetName() for category in flat_list])
+            categories_count = len(categorie_names)
+            print("Categories Count: ", categories_count)
+            
+            tmp_categories = None
+            flat_list = None
+
             print("--------- Preprocess Dataset ----------")
             generator = SampleGenerator(words)
             words, categories, docs = generator.GenerateLabelsAndDocs(generator.GenerateTuples())
@@ -154,8 +165,9 @@ class AmbiguityMapper():
             int_words = LabelEncoder().fit_transform(array(words))
             encoded_words = to_categorical(int_words)
 
-            text_train_arrays = np.zeros((self._train_size, self.Text_INPUT_DIM))
-            text_test_arrays = np.zeros((self._test_size, self.Text_INPUT_DIM))
+            print("-------- Create Network Input ---------")
+            text_train_arrays = np.zeros((self._train_size, self.TEXT_INPUT_DIM))
+            text_test_arrays = np.zeros((self._test_size, self.TEXT_INPUT_DIM))
 
             for i in range(self._train_size):
                 text_train_arrays[i] = text_model.docvecs[str(i)]
@@ -165,26 +177,27 @@ class AmbiguityMapper():
                 text_test_arrays[j] = text_model.docvecs[str(i)]
                 j=j+1
 
-
-            print("Collecting Done!")
             train_words = encoded_words[:self._train_size]
             test_words = encoded_words[self._train_size:]
-            print("Tr_Text: ", type(text_train_arrays), text_train_arrays.shape)
-            print("Tr_Words: ", type(train_words), train_words.shape)
-            print("Te_Text: ", type(text_test_arrays), text_test_arrays.shape)
-            print("Te_Words: ", type(test_words), test_words.shape)
             
             if train_words.shape[0] != text_train_arrays.shape[0]:
-                print()
                 print("The shapes of the doc and word arrays do not match in the first dimension!")
 
-            train_set = np.concatenate((train_words, text_train_arrays), axis=1)
-            test_set = np.concatenate((test_words, text_test_arrays), axis=1)
+            train_x = np.concatenate((train_words, text_train_arrays), axis=1)
+            train_y = encoded_categories[:self._train_size]
+            test_x = np.concatenate((test_words, text_test_arrays), axis=1)
 
-            print("Test Print")
-            print(train_set.shape)
-            print(test_set.shape)
-            #TODO: Currently not in use since the pipe and the network are still missing.
+            print("Train_X Shape: ", train_x.shape)
+            print("Train_Y Shape: ", train_y.shape)
+            print("Test Shape: ", test_x.shape)
+
+            print("------ Build and Execute Model --------")
+            net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
+            net_model.Compile()
+            history = net_model.Train(train_x=train_x, train_y=train_y)
+            net_model.ShowResultAccuracy(history)
+            net_model.PlotResults(history, model_description=self._model_name)
+            net_model.PredictAndVisualize(test_st=test_x, categories=categorie_names)
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
