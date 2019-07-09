@@ -41,7 +41,7 @@ class AmbiguityMapper():
     TEXT_INPUT_DIM:int = 300
 
     _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
-    _test_data_split:float = 15.0
+    _test_data_split:float = 5.0
     _train_size:int = -1
     _test_size:int = -1
     _model_name = 'Linguistic_MATT_Model'
@@ -65,9 +65,6 @@ class AmbiguityMapper():
     https://stackoverflow.com/questions/29760935/how-to-get-vector-for-a-sentence-from-the-word2vec-of-tokens-in-sentence
 
     '''
-
-    #TODO implement logger maybe the (F)ile(A)nd(C)onsoleLogger of my master examination
-
     def Execute(self):
         """
         The main method of the tool.
@@ -168,6 +165,9 @@ class AmbiguityMapper():
             print("-------- Create Network Input ---------")
             text_train_arrays = np.zeros((self._train_size, self.TEXT_INPUT_DIM))
             text_test_arrays = np.zeros((self._test_size, self.TEXT_INPUT_DIM))
+            print("Text_DIM: ", len(text_model.docvecs[str(0)]))
+
+            #TODO shuffle the datset befor processing
 
             for i in range(self._train_size):
                 text_train_arrays[i] = text_model.docvecs[str(i)]
@@ -195,10 +195,12 @@ class AmbiguityMapper():
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
             net_model.Create()
             net_model.Compile()
-            history = net_model.Train(train_x=train_x, train_y=train_y)
+            history = net_model.Train(train_x=train_x, train_y=train_y, eps=100, batches=16)
             net_model.ShowResultAccuracy(history)
             net_model.PlotResults(history, model_description=self._model_name)
-            net_model.PredictAndVisualize(test_st=test_x, categories=categorie_names)
+            for i in range(self._train_size,self._train_size + self._test_size):
+                print("Word: ", words[i], " | Sentences: ", sentences[i])
+            net_model.PredictAndVisualize(test_set=test_x, categories=categorie_names)
 
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
