@@ -1,10 +1,13 @@
-# -*- encoding: utf-8 -*-
 import os, sys
 import numpy as np
+from numpy import array
 import platform as pf
+import keras
+import tensorflow as tf
 from time import gmtime, strftime
-#import keras
-#import tensorflow as tf
+from keras.utils import to_categorical
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 
 from FolderManager.Manager import FolderManager
 from Json.Handler import Handler
@@ -13,7 +16,7 @@ from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 from Models.Enums import Process
 from Models.DataModels import Word
-from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf
+from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf, isNumber
 from Models.Samples import SampleGenerator
 from MachineLearning.DataPreprocessor.Doc2VecHandler import Doc2VecHandler
 
@@ -36,9 +39,10 @@ class AmbiguityMapper():
     CONSOLE_TIME_FORMAT:str = "%d.%m.%Y %H:%M:%S "
     Text_INPUT_DIM:int = 300
 
-    _json_path:str = 'Datasets/Json/20190620_13_49_23 dataset.json'
-    test_size:int = 300
-    train_size:int = 2901 - test_size
+    _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
+    _test_data_split:float = 15.0
+    _train_size:int = -1
+    test_size:int = -1
     
     
 
@@ -48,6 +52,7 @@ class AmbiguityMapper():
     https://towardsdatascience.com/multi-class-text-classification-with-doc2vec-logistic-regression-9da9947b43f4
     https://github.com/susanli2016/NLP-with-Python/blob/master/Doc2Vec%20Consumer%20Complaint.ipynb
     https://www.kaggle.com/alyosama/doc2vec-with-keras-0-77
+    https://machinelearningmastery.com/how-to-one-hot-encode-sequence-data-in-python/
     https://radimrehurek.com/gensim/models/doc2vec.html
     https://radimrehurek.com/gensim/models/doc2vec.html#gensim.models.doc2vec.TaggedDocument
     https://stackoverflow.com/questions/45125798/how-to-use-taggeddocument-in-gensim
@@ -84,8 +89,8 @@ class AmbiguityMapper():
             print("CPU:\t\t\t=> ", pf.processor())
             print("Python Version:\t\t=> ", pf.python_version())
             print("Encding:\t\t=> ", sys.stdout.encoding or sys.getfilesystemencoding())
-            #print("Tensorflow version: \t=> ", tf.__version__)
-            #print("Keras version: \t\t=> ", keras.__version__, '\n')
+            print("Tensorflow version: \t=> ", tf.__version__)
+            print("Keras version: \t\t=> ", keras.__version__, '\n')
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             
             print("#######################################")
@@ -105,7 +110,6 @@ class AmbiguityMapper():
                 print("Destination: ", self.JSON_SUB_FOLDER)
 
                 self.ExecuteRawDatasetCollection()
-
             print("#######################################")
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteTool]. Arguments:\n{1!r}"
@@ -114,6 +118,9 @@ class AmbiguityMapper():
             sys.exit(1)
     
     def ExecuteANNProcessing(self):
+        """
+        This method handle the machine learning part.
+        """   
         try:
             handler:Handler = Handler(self._json_path, self.JSON_NAME)
             words:list = handler.ReadFromJson()
@@ -123,38 +130,60 @@ class AmbiguityMapper():
                 sys.exit(1)
 
             
-            print("-------- Generate Dataset D2V ---------")
+            print("--------- Preprocess Dataset ----------")
             generator = SampleGenerator(words)
-            labels, categories, docs = generator.GenerateLabelsAndDocs(generator.GenerateTuples())
-            print("Docs: ", len(docs))
-            print("Categories: ", len(categories))
-            print("Labels: ", len(labels))
+            words, categories, docs = generator.GenerateLabelsAndDocs(generator.GenerateTuples())
+            dataset_size = len(docs)
+            self._test_size = self.TestSplitSize(dataset_size, self._test_data_split)
+            self._train_size = dataset_size - self._test_size
+
+            print("dataset_size:\t", self._train_size + self._test_size)
+            print("train_size:\t", self._train_size)
+            print("test_size:\t", self._test_size)
 
             print("-------- Build Text Model D2V ---------")
-            d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, labels)
+            d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, words)
             sentences = d2v_handler.GenerateLabeledSentences()
-
-            print("Doc: ", docs[0])
-            print("Cat: ", categories[0])
-            print("Label: ", labels[0])
-            print("Sent: ", sentences[0])
-
             text_model = d2v_handler.GenerateTextModel(sentences)
 
-            text_train_arrays = np.zeros((self.train_size, self.Text_INPUT_DIM))
-            text_test_arrays = np.zeros((self.test_size, self.Text_INPUT_DIM))
+            print("------- One Hot Encode Classes --------")
+            int_categories = LabelEncoder().fit_transform(array(categories))
+            encoded_categories = to_categorical(int_categories)
 
-            for i in range(self.train_size):
+            print("-------- One Hot Encode Words ---------")
+            int_words = LabelEncoder().fit_transform(array(words))
+            encoded_words = to_categorical(int_words)
+
+            text_train_arrays = np.zeros((self._train_size, self.Text_INPUT_DIM))
+            text_test_arrays = np.zeros((self._test_size, self.Text_INPUT_DIM))
+
+            for i in range(self._train_size):
                 text_train_arrays[i] = text_model.docvecs[str(i)]
 
             j=0
-            for i in range(self.train_size,self.train_size + self.test_size):
+            for i in range(self._train_size,self._train_size + self._test_size):
                 text_test_arrays[j] = text_model.docvecs[str(i)]
                 j=j+1
-    
-            print(text_train_arrays[0][:50])
 
 
+            print("Collecting Done!")
+            train_words = encoded_words[:self._train_size]
+            test_words = encoded_words[self._train_size:]
+            print("Tr_Text: ", type(text_train_arrays), text_train_arrays.shape)
+            print("Tr_Words: ", type(train_words), train_words.shape)
+            print("Te_Text: ", type(text_test_arrays), text_test_arrays.shape)
+            print("Te_Words: ", type(test_words), test_words.shape)
+            
+            if train_words.shape[0] != text_train_arrays.shape[0]:
+                print()
+                print("The shapes of the doc and word arrays do not match in the first dimension!")
+
+            train_set = np.concatenate((train_words, text_train_arrays), axis=1)
+            test_set = np.concatenate((test_words, text_test_arrays), axis=1)
+
+            print("Test Print")
+            print(train_set.shape)
+            print(test_set.shape)
             #TODO: Currently not in use since the pipe and the network are still missing.
 
         except Exception as ex:
@@ -224,6 +253,22 @@ class AmbiguityMapper():
             message = template.format(type(ex).__name__, ex.args)
             print(message)
             sys.exit(1)
+
+    def TestSplitSize(self, dataset_size:int, split_percentage:float):
+        """
+        This method return a number for the size of desired test samples from dataset by a given percentage.
+            :param dataset_size:int: size of the whole datset
+            :param split_percentage:float: desired test size percentage from dataset
+        """   
+        try:
+            if isNumber(dataset_size) and isNumber(split_percentage):
+                return round((dataset_size * split_percentage)/100.0)
+            else:
+                return -1
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Main.SplitData]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
 
     def MakeFolderIfMissing(self, folder_path:str):
         """
