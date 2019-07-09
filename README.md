@@ -10,6 +10,8 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   -  pip install keras
 - Genism                        => https://radimrehurek.com/gensim/install.html
   - pip install -U gensim
+- Scikit-Learn                  => https://scikit-learn.org/stable/install.html
+  - pip install -U scikit-learn
 - NLTK                          => http://www.nltk.org/data.html 
   - pip install -U nltk
 - NLTK Corpora                  => http://www.nltk.org/data.html
