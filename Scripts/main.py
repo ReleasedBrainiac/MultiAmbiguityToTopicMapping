@@ -193,6 +193,7 @@ class AmbiguityMapper():
 
             print("------ Build and Execute Model --------")
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
+            net_model.Create()
             net_model.Compile()
             history = net_model.Train(train_x=train_x, train_y=train_y)
             net_model.ShowResultAccuracy(history)

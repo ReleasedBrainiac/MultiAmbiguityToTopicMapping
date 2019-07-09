@@ -22,7 +22,6 @@ class Model(object):
         try:
             self._init_shape:tuple = init_shape
             self._categories:int = categories
-            self.Create()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
