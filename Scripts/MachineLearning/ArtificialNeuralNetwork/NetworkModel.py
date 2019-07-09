@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM, Embedding, Input, RepeatVector
+from keras.layers import Dense, Dropout
 from keras.optimizers import SGD
 from keras import regularizers
 import matplotlib.pyplot as plt
@@ -20,7 +20,7 @@ class Model(object):
         try:
             self._init_shape:tuple = init_shape
             self._categories:int = categories
-            self._model = Create()
+            self._model = self.Create()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -37,9 +37,9 @@ class Model(object):
         """   
         try:
             if input_shape == None:
-                return Dense(output_dim, input_shape, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
+                return Dense(units=output_dim, input_shape=input_shape, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
             else:
-                return Dense(output_dim, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
+                return Dense(units=output_dim, kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer, activation=activation)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.NewDense]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -51,14 +51,14 @@ class Model(object):
         """   
         try:
             model = Sequential()
-            model.add(NewDense(input_shape=self._init_shape))
+            model.add(self.NewDense(input_shape=self._init_shape))
             model.add(Dropout(0.3))
-            model.add(NewDense(input_shape=None))
+            model.add(self.NewDense())
             model.add(Dropout(0.3))
-            model.add(NewDense(input_shape=None))
+            model.add(self.NewDense())
             model.add(Dropout(0.5))
-            model.add(NewDense(output_dim=80, input_shape=None))
-            model.add(NewDense(output_dim=self._categories, input_shape=None, activation="softmax"))
+            model.add(self.NewDense(output_dim=80))
+            model.add(self.NewDense(output_dim=self._categories, input_shape=None, activation="softmax"))
             model.summary()
             return model
         except Exception as ex:
