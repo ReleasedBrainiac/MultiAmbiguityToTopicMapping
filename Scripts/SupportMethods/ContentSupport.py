@@ -379,6 +379,20 @@ def ReorderListByIndices(reorder_list:list, ordering_indices:list):
         message = template.format(type(ex).__name__, ex.args)
         print(message)
 
+def CollectUniqueByOrderOfAppearance(dataset:list):
+    """
+    This method collect all unique in order of appearance and return it as list.
+        :param dataset:list: dataset list
+    """
+    try: 
+        seen = set()
+        seen_add = seen.add
+        return [x for x in dataset if not (x in seen or seen_add(x))]
+    except Exception as ex:
+        template = "An exception of type {0} occurred in [ContentSupport.CollectUniqueByOrderOfAppearance]. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)  
+
 def MatrixExpansionWithZeros(np_2D_array:np.ndarray, up_to_dim:int):
     """
     This function allow to expand a 2D matrix in both directions and fill the empty space with zeros.

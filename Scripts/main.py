@@ -9,6 +9,7 @@ from keras.utils import to_categorical
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 
+from SupportMethods.Shuffler import Shuffler
 from FolderManager.Manager import FolderManager
 from Json.Handler import Handler
 from FileManager.FileWriter import Writer
@@ -16,7 +17,7 @@ from FileManager.FileReader import Reader
 from FileManager.UniLeipzigApiCaller import UniLeipzigAPICaller
 from Models.Enums import Process
 from Models.DataModels import Word
-from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf, isNumber
+from SupportMethods.ContentSupport import hasContent, isNotNone, SetNumberIf, isNumber, CollectUniqueByOrderOfAppearance
 from Models.Samples import SampleGenerator
 from MachineLearning.DataPreprocessor.Doc2VecHandler import Doc2VecHandler
 from MachineLearning.ArtificialNeuralNetwork.NetworkModel import Model
@@ -131,7 +132,7 @@ class AmbiguityMapper():
             tmp_categories = [word.GetCategories() for word in words]
             flat_list = [item for sublist in tmp_categories for item in sublist]
             
-            categorie_names = set([category.GetName() for category in flat_list])
+            categorie_names = CollectUniqueByOrderOfAppearance([category.GetName() for category in flat_list])
             categories_count = len(categorie_names)
             print("Categories Count: ", categories_count)
             
@@ -141,6 +142,8 @@ class AmbiguityMapper():
             print("--------- Preprocess Dataset ----------")
             generator = SampleGenerator(words)
             words, categories, docs = generator.GenerateLabelsAndDocs(generator.GenerateTuples())
+            words, categories, docs = Shuffler([list(words), list(categories), list(docs)]).ShuffleMultiList()
+
             dataset_size = len(docs)
             self._test_size = self.TestSplitSize(dataset_size, self._test_data_split)
             self._train_size = dataset_size - self._test_size
@@ -167,8 +170,6 @@ class AmbiguityMapper():
             text_test_arrays = np.zeros((self._test_size, self.TEXT_INPUT_DIM))
             print("Text_DIM: ", len(text_model.docvecs[str(0)]))
 
-            #TODO shuffle the datset befor processing
-
             for i in range(self._train_size):
                 text_train_arrays[i] = text_model.docvecs[str(i)]
 
@@ -183,6 +184,11 @@ class AmbiguityMapper():
             if train_words.shape[0] != text_train_arrays.shape[0]:
                 print("The shapes of the doc and word arrays do not match in the first dimension!")
 
+            print(train_words.shape)
+            print(text_train_arrays.shape)
+            print(test_words.shape)
+            print(text_test_arrays.shape)
+
             train_x = np.concatenate((train_words, text_train_arrays), axis=1)
             train_y = encoded_categories[:self._train_size]
             test_x = np.concatenate((test_words, text_test_arrays), axis=1)
@@ -195,7 +201,7 @@ class AmbiguityMapper():
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
             net_model.Create()
             net_model.Compile()
-            history = net_model.Train(train_x=train_x, train_y=train_y, eps=100, batches=16)
+            history = net_model.Train(train_x=train_x, train_y=train_y, eps=300, batches=64)
             net_model.ShowResultAccuracy(history)
             net_model.PlotResults(history, model_description=self._model_name)
             for i in range(self._train_size,self._train_size + self._test_size):

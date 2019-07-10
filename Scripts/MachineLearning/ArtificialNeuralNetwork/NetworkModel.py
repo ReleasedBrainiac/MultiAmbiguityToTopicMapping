@@ -4,6 +4,7 @@ from keras.optimizers import SGD
 from keras import regularizers
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 class Model(object):
 
@@ -143,6 +144,7 @@ class Model(object):
             :param submission_file_name:str: file name
         """   
         try:
+            
             submission = pd.DataFrame(self._model.predict_proba(test_set))
             submission.columns = categories
             submission.to_csv(submission_file_name, index=False)
