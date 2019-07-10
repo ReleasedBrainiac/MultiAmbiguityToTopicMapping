@@ -5,6 +5,7 @@ from keras import regularizers
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+from SupportMethods.ContentSupport import isNotNone
 
 class Model(object):
 
@@ -136,17 +137,34 @@ class Model(object):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def PredictAndVisualize(self, test_set, categories:list, submission_file_name:str = "submission_all.csv"):
+    def PredictAndVisualize(self, 
+                            test_set, 
+                            categories:list, 
+                            decode_dict:dict, 
+                            test_words:list, 
+                            test_docs:list, 
+                            submission_file_name:str = "submission_all.csv", 
+                            isClasses:bool = True):
         """
         This method predict results for a given test set and store it in a csv file.
-            :param test_set: test set
-            :param categories:list: list of categorie names 
-            :param submission_file_name:str: file name
-        """   
+            :param test_set: predictable input
+            :param categories:list: proba lables 
+            :param decode_dict:dict: class decoder dicts
+            :param test_words:list: prediction words
+            :param test_docs:list: predictions docs
+            :param submission_file_name:str: name of the prdicted results file
+            :param isClasses:bool: predict classes otherwise probability
+        """
         try:
-            
-            submission = pd.DataFrame(self._model.predict_proba(test_set))
-            submission.columns = categories
+            mapped:dict = {}
+            predictions = self._model.predict_classes(test_set) if isClasses else self._model.predict_proba(test_set)
+
+            if isNotNone(test_words): mapped['Words'] = test_words
+            if isNotNone(test_docs): mapped['Docs'] = test_docs
+            if isNotNone(predictions): mapped['PredClasses'] = predictions
+            if isNotNone(decode_dict) and isNotNone(predictions): mapped['ClassNames'] = [decode_dict[p] for p in predictions]
+            submission = pd.DataFrame(mapped)
+            if categories != None: submission.columns = categories
             submission.to_csv(submission_file_name, index=False)
             submission.head()
         except Exception as ex:

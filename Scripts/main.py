@@ -158,9 +158,11 @@ class AmbiguityMapper():
             text_model = d2v_handler.GenerateTextModel(sentences)
 
             print("------- One Hot Encode Classes --------")
-            int_categories = LabelEncoder().fit_transform(array(categories))
-            encoded_categories = to_categorical(int_categories)
-
+            int_categories = LabelEncoder().fit_transform(array(categorie_names))
+            data_to_class = dict(zip(categorie_names, int_categories))
+            class_to_data = dict(zip(int_categories, categorie_names))
+            encoded_categories = to_categorical([data_to_class[c] for c in categories])
+            
             print("-------- One Hot Encode Words ---------")
             int_words = LabelEncoder().fit_transform(array(words))
             encoded_words = to_categorical(int_words)
@@ -184,11 +186,6 @@ class AmbiguityMapper():
             if train_words.shape[0] != text_train_arrays.shape[0]:
                 print("The shapes of the doc and word arrays do not match in the first dimension!")
 
-            print(train_words.shape)
-            print(text_train_arrays.shape)
-            print(test_words.shape)
-            print(text_test_arrays.shape)
-
             train_x = np.concatenate((train_words, text_train_arrays), axis=1)
             train_y = encoded_categories[:self._train_size]
             test_x = np.concatenate((test_words, text_test_arrays), axis=1)
@@ -201,13 +198,18 @@ class AmbiguityMapper():
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
             net_model.Create()
             net_model.Compile()
-            history = net_model.Train(train_x=train_x, train_y=train_y, eps=300, batches=64)
+            history = net_model.Train(train_x=train_x, train_y=train_y, eps=200, batches=64)
             net_model.ShowResultAccuracy(history)
             net_model.PlotResults(history, model_description=self._model_name)
-            for i in range(self._train_size,self._train_size + self._test_size):
-                print("Word: ", words[i], " | Sentences: ", sentences[i])
-            net_model.PredictAndVisualize(test_set=test_x, categories=categorie_names)
 
+            train_set_words = [words[w] for w in range(self._train_size,self._train_size + self._test_size)]
+            train_set_docs = [sentences[s].words for s in range(self._train_size,self._train_size + self._test_size)]
+
+            net_model.PredictAndVisualize(  test_set=test_x, 
+                                            categories = None, 
+                                            decode_dict = class_to_data,
+                                            test_words = train_set_words, 
+                                            test_docs = train_set_docs)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
