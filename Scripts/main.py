@@ -198,7 +198,7 @@ class AmbiguityMapper():
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
             net_model.Create()
             net_model.Compile()
-            history = net_model.Train(train_x=train_x, train_y=train_y, eps=200, batches=64)
+            history = net_model.Train(train_x=train_x, train_y=train_y, eps=25, batches=64)
             net_model.ShowResultAccuracy(history)
             net_model.PlotResults(history, model_description=self._model_name)
 
