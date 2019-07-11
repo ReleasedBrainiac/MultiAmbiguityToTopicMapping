@@ -18,6 +18,8 @@ This Repo provides and MultiAmbiguity2Topic and later MultiAmbiguity2Classificat
   - read instructions at the webpage
 - Pandas                0.24.2  => https://pandas.pydata.org/pandas-docs/stable/install.html
   - pip install -U pandas
+- Sklearn                       => https://scikit-learn.org/stable/install.html
+  - pip install -U scikit-learn
 
 ## Current developement status
 - Tool is untested, in proceeding
