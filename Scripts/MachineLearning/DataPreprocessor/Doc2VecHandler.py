@@ -12,7 +12,7 @@ class Doc2VecHandler(object):
     This pipe is based on https://www.kaggle.com/alyosama/doc2vec-with-keras-0-77
     """
 
-    def __init__(self, docs:list, labels:list, stopword_language:str = None, clean_up_rex:str = None):
+    def __init__(self, docs:list, labels:list, stopword_language:str = None, clean_up_rex:str = None, remove_stopwords:bool = True):
         """
         This constructor set the initial values for the Doc2VecHandler.
             :param docs:list: list of documents
@@ -21,6 +21,7 @@ class Doc2VecHandler(object):
             :param clean_up_rex:str: text cleanup regex pattern
         """   
         try:
+            self._remove_stopwords = remove_stopwords
             self._cleanup_rex = clean_up_rex if isNotNone(clean_up_rex) else r"[^A-Za-züÜäÄöÖ0-9^'-]"
             self._stopword_language = stopword_language if isNotNone(stopword_language) else "german"
 
@@ -61,10 +62,11 @@ class Doc2VecHandler(object):
         try:
             sentences = []
             for index in range(len(self._docs)):
+                if self._remove_stopwords:
+                    sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), [str(index)]))
+                else:
+                    sentences.append(LabeledSentence(utils.to_unicode(self._docs[index]).split(), [str(index)]))
 
-                #TODO mapping in große #Docs
-
-                sentences.append(LabeledSentence(utils.to_unicode(self.CleanSentences(self._docs[index])).split(), [str(index)]))
             return sentences
         except Exception as ex:
             template = "An exception of type {0} occurred in [Doc2VecHandler.GenerateLabeledSentences]. Arguments:\n{1!r}"

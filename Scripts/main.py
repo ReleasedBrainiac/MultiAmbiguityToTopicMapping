@@ -46,6 +46,7 @@ class AmbiguityMapper():
     _train_size:int = -1
     _test_size:int = -1
     _model_name = 'Linguistic_MATT_Model'
+    _use_stopwords = False
     
     
 
@@ -153,7 +154,7 @@ class AmbiguityMapper():
             print("test_size:\t", self._test_size)
 
             print("-------- Build Text Model D2V ---------")
-            d2v_handler:Doc2VecHandler = Doc2VecHandler(docs, words)
+            d2v_handler:Doc2VecHandler = Doc2VecHandler(docs=docs, labels=words, remove_stopwords=self._use_stopwords)
             sentences = d2v_handler.GenerateLabeledSentences()
             text_model = d2v_handler.GenerateTextModel(sentences)
 
