@@ -117,7 +117,7 @@ class Model(object):
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def PlotResults(self, history, model_description:str, history_final_accs:str = None, orientation:str = 'landscape', image_type:str = 'png'):
+    def PlotResults(self, history, model_description:str, orientation:str = 'landscape', image_type:str = 'png'):
         """
         This method plot acc and loss from history and store it into seperate files.
             :param history: the train history

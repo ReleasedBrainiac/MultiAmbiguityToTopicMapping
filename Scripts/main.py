@@ -224,7 +224,6 @@ class AmbiguityMapper():
             net_model.PlotSummary(self._model_name)
             history = net_model.Train(train_x=train_x, train_y=train_y, eps=self._epochs, batches=self._batches)
             print(net_model.ShowResultAccuracy(history))
-
             net_model.PlotResults(history, model_description=self._model_name)
 
             train_set_words = [words[w] for w in range(self._train_size,self._train_size + self._test_size)]
