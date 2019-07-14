@@ -9,11 +9,9 @@ import numpy as np
 from SupportMethods.ContentSupport import isNotNone, isNone
 
 class Model(object):
-
-    #TODO: Resourcen da noch alles fehlt
-    # => https://keras.io/getting-started/functional-api-guide/
-    # => https://keras.io/getting-started/sequential-model-guide/
-
+    """
+    This class includs all necessary functionalities round about the keras model train, predict, print and so on.
+    """
     _model = None
 
     def __init__(self, init_shape:tuple, categories:int = -1):
@@ -97,17 +95,29 @@ class Model(object):
 
     def ShowResultAccuracy(self, history):
         """
-        This method show the train results.
+        This method show the train acc results.
             :param history: history of the training
         """   
         try:
-            print("Training accuracy: %.2f%% / Validation accuracy: %.2f%%" % (100*history.history['acc'][-1], 100*history.history['val_acc'][-1]))
+            return "Training accuracy: %.2f%% / Validation accuracy: %.2f%%" % (100*history.history['acc'][-1], 100*history.history['val_acc'][-1])
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.ShowResultAccuracy]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
 
-    def PlotResults(self, history, model_description:str, orientation:str = 'landscape', image_type:str = 'png'):
+    def ShowResultLoss(self, history):
+        """
+        This method show the train loss results.
+            :param history: history of the training
+        """   
+        try:
+            return 'Training loss: '+ str(history.history['loss'][-1])[:-6] +' / Validation loss: ' + str(history.history['val_loss'][-1])[:-6]
+        except Exception as ex:
+            template = "An exception of type {0} occurred in [Model.ShowResultLoss]. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print(message)
+
+    def PlotResults(self, history, model_description:str, history_final_accs:str = None, orientation:str = 'landscape', image_type:str = 'png'):
         """
         This method plot acc and loss from history and store it into seperate files.
             :param history: the train history
@@ -117,18 +127,22 @@ class Model(object):
         """   
         try:
             acc_figure = plt.figure(1)
+            acc_figure.suptitle('model categorical accuracy', fontsize=14, fontweight='bold')
+            plt.title(self.ShowResultAccuracy(history))
+
             plt.plot(history.history['acc'])
             plt.plot(history.history['val_acc'])
-            plt.title('model categorical accuracy')
             plt.ylabel('categorical accuracy')
             plt.xlabel('epoch')
             plt.legend(['train', 'valid'], loc='upper left')
             acc_figure.savefig((model_description+'acc_plot.'+image_type), orientation=orientation)
 
             loss_figure = plt.figure(2)
+            loss_figure.suptitle('model loss', fontsize=14, fontweight='bold')
+            plt.title(self.ShowResultLoss(history))
+
             plt.plot(history.history['loss'])
             plt.plot(history.history['val_loss'])
-            plt.title('model loss')
             plt.ylabel('loss')
             plt.xlabel('epoch')
             plt.legend(['train', 'valid'], loc='upper left')
@@ -137,7 +151,6 @@ class Model(object):
             template = "An exception of type {0} occurred in [Model.PlotResults]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
             print(message)
-
 
     def PlotSummary(self, file_name:str = None, show_shapes:bool = True):
         """

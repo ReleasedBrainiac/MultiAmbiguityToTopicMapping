@@ -45,14 +45,16 @@ class AmbiguityMapper():
     _test_data_split:float = 5.0
     _train_size:int = -1
     _test_size:int = -1
-    _use_stopwords:bool = True
     _batches:int = 64
-    _epochs:int = 100
+    _use_stopwords:bool = False
+    _epochs:int = -1
     _model_name_basic:str = 'Linguistic_MATT_Model'
     _model_folder:str = _model_name_basic+'_'+strftime(FILE_TIME_FORMAT, gmtime()) + "/"
-    _model_name:str = _model_folder + _model_name_basic + '_Eps_' + str(_epochs) + '_batches' + str(64) + '_UseStops_' + str(_use_stopwords)
-    
-    
+    _model_name:str = _model_folder + _model_name_basic + '_Eps_' + str(_epochs) + '_batches' + str(_batches) + '_UseStops_' + str(_use_stopwords)
+
+    _use_stopwords_list:list = [True, True, True, True, False, False, False, False]
+    _epochs_list:list = [25, 50, 75, 100, 25, 50, 75, 100]
+ 
     '''
     Ressourcen zum Doc2Vec Ansatz
 
@@ -70,6 +72,18 @@ class AmbiguityMapper():
     https://stackoverflow.com/questions/29760935/how-to-get-vector-for-a-sentence-from-the-word2vec-of-tokens-in-sentence
 
     '''
+
+    def MultiExecute(self):
+        """
+        This method allow to run multiple different setups after another.
+        """
+        for run in range(len(self._epochs_list)):
+            self._use_stopwords = self._use_stopwords_list[run]
+            self._epochs = self._epochs_list[run]
+            self._model_folder = self._model_name_basic+'_'+strftime(self.FILE_TIME_FORMAT, gmtime()) + "/"
+            self._model_name = self._model_folder + self._model_name_basic + '_Eps_' + str(self._epochs) + '_batches' + str(self._batches) + '_UseStops_' + str(self._use_stopwords)
+            self.Execute()
+
     def Execute(self):
         """
         The main method of the tool.
@@ -209,7 +223,8 @@ class AmbiguityMapper():
             net_model.Compile()
             net_model.PlotSummary(self._model_name)
             history = net_model.Train(train_x=train_x, train_y=train_y, eps=self._epochs, batches=self._batches)
-            net_model.ShowResultAccuracy(history)
+            print(net_model.ShowResultAccuracy(history))
+
             net_model.PlotResults(history, model_description=self._model_name)
 
             train_set_words = [words[w] for w in range(self._train_size,self._train_size + self._test_size)]
@@ -318,4 +333,4 @@ class AmbiguityMapper():
             print(message)
 
 if __name__ == "__main__":
-    AmbiguityMapper().Execute()
+    AmbiguityMapper().MultiExecute()
