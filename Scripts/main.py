@@ -45,8 +45,10 @@ class AmbiguityMapper():
     _test_data_split:float = 5.0
     _train_size:int = -1
     _test_size:int = -1
-    _model_name = 'Linguistic_MATT_Model'
-    _use_stopwords = False
+    _use_stopwords:bool = True
+    _batches:int = 64
+    _epochs:int = 100
+    _model_name:str = 'Linguistic_MATT_Model_Eps_' + str(_epochs) + '_batches' + str(64) + '_UseStops_' + str(_use_stopwords)
     
     
 
@@ -146,6 +148,7 @@ class AmbiguityMapper():
             words, categories, docs = Shuffler([list(words), list(categories), list(docs)]).ShuffleMultiList()
 
             dataset_size = len(docs)
+            self._model_name += '_DataSize_' + str(dataset_size)
             self._test_size = self.TestSplitSize(dataset_size, self._test_data_split)
             self._train_size = dataset_size - self._test_size
 
@@ -199,7 +202,8 @@ class AmbiguityMapper():
             net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
             net_model.Create()
             net_model.Compile()
-            history = net_model.Train(train_x=train_x, train_y=train_y, eps=25, batches=64)
+            net_model.PlotSummary(self._model_name)
+            history = net_model.Train(train_x=train_x, train_y=train_y, eps=self._epochs, batches=self._batches)
             net_model.ShowResultAccuracy(history)
             net_model.PlotResults(history, model_description=self._model_name)
 
