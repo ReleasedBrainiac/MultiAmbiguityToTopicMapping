@@ -48,10 +48,11 @@ class AmbiguityMapper():
     _use_stopwords:bool = True
     _batches:int = 64
     _epochs:int = 100
-    _model_name:str = 'Linguistic_MATT_Model_Eps_' + str(_epochs) + '_batches' + str(64) + '_UseStops_' + str(_use_stopwords)
+    _model_name_basic:str = 'Linguistic_MATT_Model'
+    _model_folder:str = _model_name_basic+'_'+strftime(FILE_TIME_FORMAT, gmtime()) + "/"
+    _model_name:str = _model_folder + _model_name_basic + '_Eps_' + str(_epochs) + '_batches' + str(64) + '_UseStops_' + str(_use_stopwords)
     
     
-
     '''
     Ressourcen zum Doc2Vec Ansatz
 
@@ -125,6 +126,10 @@ class AmbiguityMapper():
         This method handle the machine learning part.
         """   
         try:
+            print("---------- Set Result Folder ----------")
+            
+            self.MakeFolderIfMissing(folder_path = self._model_folder)
+            
             handler:Handler = Handler(self._json_path, self.JSON_NAME)
             words:list = handler.ReadFromJson()
 

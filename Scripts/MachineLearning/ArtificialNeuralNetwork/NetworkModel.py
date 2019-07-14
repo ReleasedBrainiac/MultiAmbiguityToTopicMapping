@@ -146,7 +146,8 @@ class Model(object):
             :param show_shapes:bool=True: 
         """
         try:
-            if isNone(): file_name = "ann_model_graph_plot.png"
+            file_name = (file_name + "_ModelGraph.png") if isNotNone(file_name) else "ann__ModelGraph.png"
+
             plot_model(self._model, to_file=file_name, show_shapes=show_shapes)
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.PlotSummary]. Arguments:\n{1!r}"
