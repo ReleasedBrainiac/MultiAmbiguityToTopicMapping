@@ -136,6 +136,7 @@ class Model(object):
             plt.xlabel('epoch')
             plt.legend(['train', 'valid'], loc='upper left')
             acc_figure.savefig((model_description+'acc_plot.'+image_type), orientation=orientation)
+            acc_figure.clf()
 
             loss_figure = plt.figure(2)
             loss_figure.suptitle('model loss', fontsize=14, fontweight='bold')
@@ -147,6 +148,7 @@ class Model(object):
             plt.xlabel('epoch')
             plt.legend(['train', 'valid'], loc='upper left')
             loss_figure.savefig((model_description+'loss_plot.'+image_type), orientation=orientation)
+            loss_figure.clf()
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.PlotResults]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
