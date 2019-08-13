@@ -41,8 +41,8 @@ class AmbiguityMapper():
     CONSOLE_TIME_FORMAT:str = "%d.%m.%Y %H:%M:%S "
     TEXT_INPUT_DIM:int = 300
 
-    _json_path:str = 'Datasets/Json/20190704_15_09_48_dataset.json'
-    _test_data_split:float = 5.0
+    _json_path:str = 'Datasets/Json/20190620_13_49_23 dataset.json'
+    _test_data_split:float = 80.0
     _train_size:int = -1
     _test_size:int = -1
     _batches:int = 64
@@ -53,7 +53,7 @@ class AmbiguityMapper():
     _model_name:str = _model_folder + _model_name_basic + '_Eps_' + str(_epochs) + '_batches' + str(_batches) + '_UseStops_' + str(_use_stopwords)
 
     _use_stopwords_list:list = [True, True, True, True, False, False, False, False]
-    _epochs_list:list = [25, 50, 75, 100, 25, 50, 75, 100]
+    _epochs_list:list = [50, 100, 150, 200, 50, 100, 150, 200]
  
     '''
     Ressourcen zum Doc2Vec Ansatz
@@ -218,7 +218,7 @@ class AmbiguityMapper():
             print("Test Shape: ", test_x.shape)
 
             print("------ Build and Execute Model --------")
-            net_model = Model(init_shape=(train_x.shape[1],), categories=categories_count)
+            net_model = Model(init_shape=(train_x.shape[1],), model_folder=self._model_folder, categories=categories_count)
             net_model.Create()
             net_model.Compile()
             net_model.PlotSummary(self._model_name)
@@ -233,7 +233,8 @@ class AmbiguityMapper():
                                             categories = None, 
                                             decode_dict = class_to_data,
                                             test_words = train_set_words, 
-                                            test_docs = train_set_docs)
+                                            test_docs = train_set_docs, 
+                                            submission_file_name = self._model_folder + "submission_all.csv")
         except Exception as ex:
             template = "An exception of type {0} occurred in [Main.ExecuteANNProcessing]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
