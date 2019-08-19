@@ -130,7 +130,7 @@ class Model(object):
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.ShowResultLoss]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
-            print(message)
+            print(message)        
 
     def PlotResults(self, history, model_description:str, orientation:str = 'landscape', image_type:str = 'png'):
         """
