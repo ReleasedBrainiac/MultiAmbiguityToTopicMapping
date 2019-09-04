@@ -7,22 +7,26 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from SupportMethods.ContentSupport import isNotNone, isNone
+from keras.callbacks import History, ReduceLROnPlateau, BaseLogger, EarlyStopping, ModelCheckpoint
 
 class Model(object):
     """
     This class includs all necessary functionalities round about the keras model train, predict, print and so on.
     """
     _model = None
+    
 
-    def __init__(self, init_shape:tuple, categories:int = -1):
+    def __init__(self, init_shape:tuple, model_folder:str, categories:int = -1):
         """
         The constructor.
             :param init_shape:tuple: train data input shape
+            :param model_folder:str: folder where the model staff should be saved
             :param categories:int: amount of categories
         """   
         try:
             self._init_shape:tuple = init_shape
             self._categories:int = categories
+            self._model_folder:str = model_folder if isNotNone(model_folder) else None
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Constructor]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -87,7 +91,18 @@ class Model(object):
             :param batches:int: the dataset batch size
         """   
         try:
-            return self._model.fit(train_x, train_y, validation_split=val_split, epochs=eps, batch_size=batches, shuffle=True)
+            verbose:int = 1
+            base_lr = BaseLogger()
+            reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.02, patience=5, min_lr=0.000125, verbose=verbose)
+            es = EarlyStopping(monitor='val_loss', mode='min', verbose=verbose, patience=75)
+            mc = ModelCheckpoint(self._model_folder+'best_model.h5', monitor='val_acc', mode='max', verbose=verbose, save_best_only=True)
+
+            return self._model.fit( train_x, train_y, 
+                                    validation_split=val_split, 
+                                    epochs=eps, 
+                                    batch_size=batches, 
+                                    shuffle=True, 
+                                    callbacks=[base_lr, reduce_lr, es, mc])
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.Train]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
@@ -115,7 +130,7 @@ class Model(object):
         except Exception as ex:
             template = "An exception of type {0} occurred in [Model.ShowResultLoss]. Arguments:\n{1!r}"
             message = template.format(type(ex).__name__, ex.args)
-            print(message)
+            print(message)        
 
     def PlotResults(self, history, model_description:str, orientation:str = 'landscape', image_type:str = 'png'):
         """
@@ -191,6 +206,7 @@ class Model(object):
             mapped:dict = {}
             predictions = self._model.predict_classes(test_set) if isClasses else self._model.predict_proba(test_set)
 
+            submission_file_name = submission_file_name if isNotNone(submission_file_name) else "submission_all.csv"
             if isNotNone(test_words): mapped['Words'] = test_words
             if isNotNone(test_docs): mapped['Docs'] = test_docs
             if isNotNone(predictions): mapped['PredClasses'] = predictions
